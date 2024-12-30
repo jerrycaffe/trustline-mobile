@@ -12,16 +12,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PrimaryButton(title: String, onButtonClicked: ()-> Unit){
-    Button(modifier = Modifier
-        .fillMaxWidth()
-        .height(52.dp),
+fun PrimaryButton(title: String, enabled: Boolean = true, onButtonClicked: () -> Unit) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(id = R.color.primary),
-            contentColor = colorResource(id = R.color.white)
+            contentColor = colorResource(id = R.color.white),
+            disabledContainerColor = colorResource(id = R.color.primary_accent),
+            disabledContentColor = colorResource(id = R.color.white)
         ),
+        enabled = enabled,
         shape = RoundedCornerShape(8.dp),
-        onClick = onButtonClicked) {
+        onClick = onButtonClicked
+    ) {
         Text(title)
     }
 }

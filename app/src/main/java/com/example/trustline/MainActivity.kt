@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
             TrustlineTheme {
                 Scaffold(modifier = Modifier.systemBarsPadding()) { innerPadding ->
 
-                    SplashScreen()
+                    SignupScreen()
                 }
             }
         }
