@@ -31,6 +31,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     TrustlineTheme {
-        SplashScreen()
+        SignupScreen()
     }
 }

@@ -1,6 +1,7 @@
 package com.example.trustline
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,29 +12,39 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun SignupScreen(modifier: Modifier = Modifier) {
+    var email by rememberSaveable { mutableStateOf("") }
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     Box(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxSize()
+            .padding(16.dp)
 
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 35.dp),
+                .padding(top = 30.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             TrustlineTitle()
@@ -42,7 +53,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.65f)
+                .fillMaxHeight()
                 .align(Alignment.Center),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -61,21 +72,9 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = "",
-                    onValueChange = {},
-                    label = { Text(text = "Email") })
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = "",
-                    onValueChange = {},
-                    label = { Text(text = "Phone number") })
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = "",
-                    onValueChange = {},
-                    label = { Text(text = "password") })
+                InputTextBox(email, "Email", onValueChanged = { })
+                InputTextBox(phoneNumber, "Phone Number", onValueChanged = { })
+                InputTextBox(password, "Password", onValueChanged = { })
 
                 PrimaryButton(title = "Sign up", enabled = false, onButtonClicked = {})
             }
@@ -95,7 +94,11 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                             .weight(1f)
                             .height(1.dp)
                     )
-                    Text(modifier = Modifier.padding(horizontal = 8.dp), text = "or continue with")
+                    Text(
+                        color = colorResource(id = R.color.deep_grey),
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        text = "or continue with"
+                    )
                     Divider(
                         modifier = Modifier
                             .weight(1f)
@@ -117,8 +120,13 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "By clicking continue, you agree to our Terms ")
-                    Text(text = "of Service and Privacy Policy")
+                    Text(
+                        fontSize = 14.sp,
+                        text = "By clicking continue, you agree to our Terms"
+                    )
+                    Text(
+                        fontSize = 14.sp,
+                        text = "of Service and Privacy Policy")
                 }
             }
         }
@@ -127,14 +135,41 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 62.dp),
+                .padding(bottom = 56.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Already have an account? ")
+            Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
             Text(text = "Login")
         }
 
     }
 
 
+}
+
+@Composable
+fun InputTextBox(value: String, placeHolder: String, onValueChanged: () -> Unit) {
+    BasicTextField(
+        value = value,
+        onValueChange = { onValueChanged },
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        1.dp,
+                        Color.LightGray,
+                        RoundedCornerShape(18)
+                    )
+                    .padding(horizontal = 16.dp)
+                    .height(45.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (value.isEmpty()) {
+                    Text(color = colorResource(id = R.color.deep_grey), text = placeHolder)
+                }
+                innerTextField()
+
+            }
+        })
 }

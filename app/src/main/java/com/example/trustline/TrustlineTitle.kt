@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TrustlineTitle(@ColorRes textColor: Int = R.color.primary, modifier: Modifier = Modifier) {
+fun adTrustlineTitle(@ColorRes textColor: Int = R.color.primary, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         fontSize = 40.sp,
