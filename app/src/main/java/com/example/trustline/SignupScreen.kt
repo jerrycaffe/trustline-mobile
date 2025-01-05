@@ -14,21 +14,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 
@@ -63,28 +70,38 @@ fun SignupScreen(modifier: Modifier = Modifier) {
         ) {
             Text(
                 style = MaterialTheme.typography.titleMedium,
-                text = "create an account"
+                text = stringResource(id = R.string.signup_title)
             )
             Text(
-                text = "Enter your details to sign up to this app"
+                text = stringResource(id = R.string.signup_description)
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
-                InputTextBox(email, "Email", onValueChanged = { })
-                InputTextBox(phoneNumber, "Phone number", onValueChanged = { })
-                InputTextBox(password, "Password", onValueChanged = { })
+                InputTextBox(email,
+                    stringResource(id = R.string.email),
+                    onValueChanged = { email = it })
+                InputTextBox(phoneNumber,
+                    stringResource(id = R.string.phone_number),
+                    onValueChanged = { phoneNumber = it })
+                InputTextBox(
+                    password,
+                    stringResource(id = R.string.password),
+                    onValueChanged = { password = it },
+                    isPasswordField = true
+                )
 
-                PrimaryButton(title = "Sign up", enabled = false, onButtonClicked = {})
+                PrimaryButton(title = stringResource(id = R.string.sing_up),
+                    enabled = false,
+                    onButtonClicked = {})
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty_four)))
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.height_twenty_four))
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
 
@@ -97,7 +114,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     Text(
                         color = colorResource(id = R.color.deep_grey),
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-                        text = "or continue with"
+                        text = stringResource(id = R.string.continue_with_socials)
                     )
                     Divider(
                         modifier = Modifier
@@ -106,38 +123,34 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     )
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                )
-                {
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.google_icon),
-                        contentDescription = "Trustline logo"
+                        contentDescription = stringResource(id = R.string.app_logo)
                     )
                 }
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(style = SpanStyle(colorResource(id = R.color.deep_grey)))
-                            { append("By clicking continue, you agree to our ") }
-                            append("Terms")
+                    Text(buildAnnotatedString {
+                        withStyle(style = SpanStyle(colorResource(id = R.color.deep_grey))) {
+                            append(
+                                "By clicking continue, you agree to our "
+                            )
                         }
-                    )
-                    Text(
-                        buildAnnotatedString {
-                            append("of Service")
-                            withStyle(style = SpanStyle(color = colorResource(id = R.color.deep_grey))) {
-                                append(
-                                    " and "
-                                )
-                            }
-                            append("Privacy Policy")
+                        append("Terms")
+                    })
+                    Text(buildAnnotatedString {
+                        append("of Service")
+                        withStyle(style = SpanStyle(color = colorResource(id = R.color.deep_grey))) {
+                            append(
+                                " and "
+                            )
                         }
-                    )
+                        append("Privacy Policy")
+                    })
                 }
             }
         }
@@ -159,30 +172,52 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun InputTextBox(value: String, placeHolder: String, onValueChanged: () -> Unit) {
-    BasicTextField(
+fun InputTextBox(
+    value: String, placeHolder: String, isPasswordField: Boolean = false,
+
+    onValueChanged: (String) -> Unit
+) {
+    var isFocused by remember { mutableStateOf(false) }
+    var showPassword by remember { mutableStateOf(false) }
+    BasicTextField(modifier = Modifier.onFocusChanged { focusedState ->
+            isFocused = focusedState.isFocused
+        },
+        visualTransformation = if (isPasswordField && !showPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        singleLine = true,
         value = value,
-        onValueChange = { onValueChanged },
+        onValueChange = onValueChanged,
         decorationBox = { innerTextField ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
-                        1.dp,
-                        Color.LightGray,
-                        MaterialTheme.shapes.small
+                        1.dp, Color.LightGray, MaterialTheme.shapes.small
                     )
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
                     .height(dimensionResource(id = R.dimen.height_semi_tall)),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Absolute.SpaceBetween
             ) {
-                if (value.isEmpty()) {
+                if (value.isEmpty() && !isFocused) {
                     Text(
-                        color = colorResource(id = R.color.deep_grey),
-                        text = placeHolder
+                        color = colorResource(id = R.color.deep_grey), text = placeHolder
                     )
                 }
                 innerTextField()
+                if (isPasswordField) {
+                    IconButton(onClick = { showPassword = !showPassword }
+
+                    ) {
+                        Icon(
+                            painter = if (showPassword) painterResource(R.drawable.eye_opened) else painterResource(
+                                R.drawable.eye_closed
+                            ),
+                            contentDescription = if (showPassword) stringResource(id = R.string.hide_password) else stringResource(
+                                id = R.string.show_password
+                            )
+                        )
+                    }
+                }
 
             }
         })
