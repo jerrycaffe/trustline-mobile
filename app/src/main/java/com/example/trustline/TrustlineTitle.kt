@@ -1,22 +1,20 @@
 package com.example.trustline
 
-import androidx.annotation.ColorRes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Color
 
 @Composable
-fun adTrustlineTitle(@ColorRes textColor: Int = R.color.primary, modifier: Modifier = Modifier) {
+fun TrustlineTitle(
+    textColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    modifier: Modifier = Modifier
+) {
     Text(
         modifier = modifier,
-        fontSize = 40.sp,
-        color = colorResource(id = textColor),
-        fontFamily = marckScriptFont,
-        fontWeight = FontWeight.W400,
-        lineHeight = 50.sp,
+        color = textColor,
+        style = MaterialTheme.typography.displayLarge,
         text = "TrustLine"
     )
 }

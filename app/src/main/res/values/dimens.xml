@@ -1,3 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_semi_medium">14dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_semi_large">24dp</dimen>
+    <dimen name="padding_large">36dp</dimen>
+    <dimen name="padding_extra_large">62dp</dimen>
+    <dimen name="height_semi_tall">45dp</dimen>
+    <dimen name="height_ninety_four">94dp</dimen>
+    <dimen name="height_forty">40dp</dimen>
+    <dimen name="height_fifty_two">52dp</dimen>
+    <dimen name="height_twenty_four">24dp</dimen>
+    <dimen name="space_ten">10dp</dimen>
+    <dimen name="space_sixteen">16dp</dimen>
 </resources>

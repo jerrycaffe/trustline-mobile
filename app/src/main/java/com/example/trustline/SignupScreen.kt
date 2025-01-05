@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,9 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun SignupScreen(modifier: Modifier = Modifier) {
@@ -37,14 +40,14 @@ fun SignupScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 30.dp),
+                .padding(top = dimensionResource(R.dimen.padding_large)),
             horizontalArrangement = Arrangement.Center
         ) {
             TrustlineTitle()
@@ -59,28 +62,25 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                fontSize = 18.sp,
-                fontFamily = montseratSemiBoldFont,
+                style = MaterialTheme.typography.titleMedium,
                 text = "create an account"
             )
             Text(
-                fontSize = 14.sp,
-                fontFamily = montseratRegularFont,
                 text = "Enter your details to sign up to this app"
             )
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
             Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
                 InputTextBox(email, "Email", onValueChanged = { })
-                InputTextBox(phoneNumber, "Phone Number", onValueChanged = { })
+                InputTextBox(phoneNumber, "Phone number", onValueChanged = { })
                 InputTextBox(password, "Password", onValueChanged = { })
 
                 PrimaryButton(title = "Sign up", enabled = false, onButtonClicked = {})
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty_four)))
             Column(
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.height_twenty_four))
             ) {
                 Row(
                     modifier = Modifier
@@ -96,7 +96,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     )
                     Text(
                         color = colorResource(id = R.color.deep_grey),
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
                         text = "or continue with"
                     )
                     Divider(
@@ -121,12 +121,23 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        fontSize = 14.sp,
-                        text = "By clicking continue, you agree to our Terms"
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(colorResource(id = R.color.deep_grey)))
+                            { append("By clicking continue, you agree to our ") }
+                            append("Terms")
+                        }
                     )
                     Text(
-                        fontSize = 14.sp,
-                        text = "of Service and Privacy Policy")
+                        buildAnnotatedString {
+                            append("of Service")
+                            withStyle(style = SpanStyle(color = colorResource(id = R.color.deep_grey))) {
+                                append(
+                                    " and "
+                                )
+                            }
+                            append("Privacy Policy")
+                        }
+                    )
                 }
             }
         }
@@ -135,7 +146,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 56.dp),
+                .padding(bottom = dimensionResource(id = R.dimen.padding_extra_large)),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
@@ -159,14 +170,17 @@ fun InputTextBox(value: String, placeHolder: String, onValueChanged: () -> Unit)
                     .border(
                         1.dp,
                         Color.LightGray,
-                        RoundedCornerShape(18)
+                        MaterialTheme.shapes.small
                     )
-                    .padding(horizontal = 16.dp)
-                    .height(45.dp),
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+                    .height(dimensionResource(id = R.dimen.height_semi_tall)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (value.isEmpty()) {
-                    Text(color = colorResource(id = R.color.deep_grey), text = placeHolder)
+                    Text(
+                        color = colorResource(id = R.color.deep_grey),
+                        text = placeHolder
+                    )
                 }
                 innerTextField()
 
