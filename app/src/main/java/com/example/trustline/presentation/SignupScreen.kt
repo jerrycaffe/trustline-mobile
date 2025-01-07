@@ -103,7 +103,10 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     isError = state.emailError != null,
                     placeHolder = stringResource(id = R.string.email),
                     keyboardType = KeyboardType.Email,
-                    onValueChanged = { viewModel.onEvent(RegistrationFormEvent.EmailChanged(it)) })
+                    onValueChanged = {
+                        viewModel.onEvent(RegistrationFormEvent.EmailChanged(it))
+
+                    })
                 //Display error
                 if (state.emailError != null) displayErrorMessage(state.emailError)
 
@@ -112,7 +115,9 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     placeHolder = stringResource(id = R.string.phone_number),
                     isError = state.phoneNumberError != null,
                     keyboardType = KeyboardType.Phone,
-                    onValueChanged = { viewModel.onEvent(RegistrationFormEvent.PhoneNumberChanged(it)) })
+                    onValueChanged = {
+                        viewModel.onEvent(RegistrationFormEvent.PhoneNumberChanged(it))
+                    })
                 if (state.phoneNumberError != null) displayErrorMessage(state.phoneNumberError)
                 InputTextBox(
                     value = state.password,
@@ -248,6 +253,7 @@ fun InputTextBox(
 
                     ) {
                         Icon(
+                            tint = colorResource(id = R.color.deep_grey),
                             painter = if (showPassword) painterResource(R.drawable.eye_opened) else painterResource(
                                 R.drawable.eye_closed
                             ),
