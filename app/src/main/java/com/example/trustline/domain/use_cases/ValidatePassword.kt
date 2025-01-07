@@ -10,6 +10,6 @@ class ValidatePassword {
         if (!containsLettersAndDigit) return ValidationResult(
             false, "Password must contain least one digit and least one character"
         )
-        return ValidationResult(true)
+        return ValidationResult(true, errorMessage = null)
     }
 }

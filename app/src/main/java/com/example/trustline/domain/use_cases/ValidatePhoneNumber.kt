@@ -9,7 +9,7 @@ class ValidatePhoneNumber {
         if (!phoneNumberValid(phoneNumber)) return ValidationResult(
             false, "Phone number must be of patter 08081234567 or +23480273625"
         )
-        return ValidationResult(true)
+        return ValidationResult(true, errorMessage = null)
     }
 
     private fun phoneNumberValid(phoneNumber: String): Boolean {

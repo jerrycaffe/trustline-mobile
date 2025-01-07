@@ -57,7 +57,13 @@ class SignupViewModel(
                 passwordError = passwordResult.errorMessage,
                 phoneNumberError = phoneNumberResult.errorMessage
             )
-            return
+
+        } else {
+            state = state.copy(
+                emailError = null,
+                passwordError = null,
+                phoneNumberError = null
+            )
         }
 
         viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }

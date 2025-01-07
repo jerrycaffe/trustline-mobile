@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,26 +54,22 @@ fun SignupScreen(modifier: Modifier = Modifier) {
     val state = viewModel.state
     val context = LocalContext.current
 
-
-    //if validation is successful
-    LaunchedEffect(key1 = context) {
-        viewModel.validationEvents.collect { event ->
-            when (event) {
-                is SignupViewModel.ValidationEvent.Success -> {
-                    Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-    var email by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
+        //if validation is successful
+        LaunchedEffect(key1 = context) {
+            viewModel.validationEvents.collect { event ->
+                when (event) {
+                    is SignupViewModel.ValidationEvent.Success -> {
+                        Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -105,22 +100,29 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
                 InputTextBox(value = state.email,
+                    isError = state.emailError != null,
                     placeHolder = stringResource(id = R.string.email),
                     keyboardType = KeyboardType.Email,
                     onValueChanged = { viewModel.onEvent(RegistrationFormEvent.EmailChanged(it)) })
-                if (state.emailError != null) {
-                    Text(text = state.emailError, color = MaterialTheme.colorScheme.error)
-                }
-                InputTextBox(phoneNumber,
-                    stringResource(id = R.string.phone_number),
-                    onValueChanged = { phoneNumber = it })
+                //Display error
+                if (state.emailError != null) displayErrorMessage(state.emailError)
+
                 InputTextBox(
-                    password,
-                    stringResource(id = R.string.password),
-                    onValueChanged = { password = it },
+                    value = state.phoneNumber,
+                    placeHolder = stringResource(id = R.string.phone_number),
+                    isError = state.phoneNumberError != null,
+                    keyboardType = KeyboardType.Phone,
+                    onValueChanged = { viewModel.onEvent(RegistrationFormEvent.PhoneNumberChanged(it)) })
+                if (state.phoneNumberError != null) displayErrorMessage(state.phoneNumberError)
+                InputTextBox(
+                    value = state.password,
+                    isError = state.passwordError != null,
+                    keyboardType = KeyboardType.Password,
+                    placeHolder = stringResource(id = R.string.password),
+                    onValueChanged = { viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it)) },
                     isPasswordField = true
                 )
-
+                if (state.passwordError != null) displayErrorMessage(state.passwordError)
                 PrimaryButton(title = stringResource(id = R.string.sing_up),
                     enabled = true,
                     onButtonClicked = {
@@ -207,12 +209,14 @@ fun InputTextBox(
     value: String,
     placeHolder: String,
     isPasswordField: Boolean = false,
+    isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
 
     onValueChanged: (String) -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
+    val borderColor = if (isError) MaterialTheme.colorScheme.error else Color.LightGray
     BasicTextField(modifier = Modifier.onFocusChanged { focusedState ->
         isFocused = focusedState.isFocused
     },
@@ -226,7 +230,7 @@ fun InputTextBox(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
-                        1.dp, Color.LightGray, MaterialTheme.shapes.small
+                        1.dp, borderColor, MaterialTheme.shapes.small
                     )
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
                     .height(dimensionResource(id = R.dimen.height_semi_tall)),
@@ -256,4 +260,9 @@ fun InputTextBox(
 
             }
         })
+}
+
+@Composable
+fun displayErrorMessage(errorMessage: String) {
+    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
 }
