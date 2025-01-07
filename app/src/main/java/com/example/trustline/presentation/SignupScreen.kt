@@ -1,5 +1,6 @@
-package com.example.trustline
+package com.example.trustline.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,12 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,19 +31,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.trustline.PrimaryButton
+import com.example.trustline.R
+import com.example.trustline.TrustlineTitle
+
 
 @Composable
 fun SignupScreen(modifier: Modifier = Modifier) {
+    val viewModel = viewModel<SignupViewModel>()
+    val state = viewModel.state
+    val context = LocalContext.current
+
+
+    //if validation is successful
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                is SignupViewModel.ValidationEvent.Success -> {
+                    Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
     var email by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -79,9 +104,13 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
-                InputTextBox(email,
-                    stringResource(id = R.string.email),
-                    onValueChanged = { email = it })
+                InputTextBox(value = state.email,
+                    placeHolder = stringResource(id = R.string.email),
+                    keyboardType = KeyboardType.Email,
+                    onValueChanged = { viewModel.onEvent(RegistrationFormEvent.EmailChanged(it)) })
+                if (state.emailError != null) {
+                    Text(text = state.emailError, color = MaterialTheme.colorScheme.error)
+                }
                 InputTextBox(phoneNumber,
                     stringResource(id = R.string.phone_number),
                     onValueChanged = { phoneNumber = it })
@@ -93,8 +122,10 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                 )
 
                 PrimaryButton(title = stringResource(id = R.string.sing_up),
-                    enabled = false,
-                    onButtonClicked = {})
+                    enabled = true,
+                    onButtonClicked = {
+                        viewModel.onEvent((RegistrationFormEvent.Submit))
+                    })
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty_four)))
             Column(
@@ -173,19 +204,23 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun InputTextBox(
-    value: String, placeHolder: String, isPasswordField: Boolean = false,
+    value: String,
+    placeHolder: String,
+    isPasswordField: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text,
 
     onValueChanged: (String) -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
     BasicTextField(modifier = Modifier.onFocusChanged { focusedState ->
-            isFocused = focusedState.isFocused
-        },
+        isFocused = focusedState.isFocused
+    },
         visualTransformation = if (isPasswordField && !showPassword) PasswordVisualTransformation() else VisualTransformation.None,
         singleLine = true,
         value = value,
         onValueChange = onValueChanged,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         decorationBox = { innerTextField ->
             Row(
                 modifier = Modifier

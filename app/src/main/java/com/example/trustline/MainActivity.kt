@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.trustline.presentation.SignupScreen
 import com.example.trustline.ui.theme.TrustlineTheme
 
 class MainActivity : ComponentActivity() {
