@@ -1,4 +1,4 @@
-package com.example.trustline.domain.use_cases
+package com.example.trustline.utils
 
 class ValidatePassword {
     fun execute(password: String): ValidationResult {

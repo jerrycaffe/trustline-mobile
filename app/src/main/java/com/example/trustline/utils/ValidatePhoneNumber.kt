@@ -1,4 +1,4 @@
-package com.example.trustline.domain.use_cases
+package com.example.trustline.utils
 
 class ValidatePhoneNumber {
     fun execute(phoneNumber: String): ValidationResult {

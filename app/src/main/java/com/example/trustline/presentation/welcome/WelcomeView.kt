@@ -1,4 +1,4 @@
-package com.example.trustline
+package com.example.trustline.presentation.welcome
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import com.example.trustline.R
+import com.example.trustline.presentation.common.PrimaryButton
+import com.example.trustline.presentation.common.PrimaryOutlinedButton
+import com.example.trustline.presentation.common.TrustLineLogoImg
+import com.example.trustline.presentation.common.TrustlineTitle
 
 @Composable
 fun WelcomeView(modifier: Modifier = Modifier) {

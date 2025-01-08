@@ -1,13 +1,13 @@
-package com.example.trustline.presentation
+package com.example.trustline.presentation.auth.register.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trustline.domain.use_cases.ValidateEmail
-import com.example.trustline.domain.use_cases.ValidatePassword
-import com.example.trustline.domain.use_cases.ValidatePhoneNumber
+import com.example.trustline.authentication.presentation.common.components.use_cases.ValidateEmail
+import com.example.trustline.utils.ValidatePassword
+import com.example.trustline.utils.ValidatePhoneNumber
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.trustline.presentation
+package com.example.trustline.presentation.auth.register.presentation
 
 sealed class RegistrationFormEvent {
     data class EmailChanged(val email: String) : RegistrationFormEvent()

@@ -1,4 +1,4 @@
-package com.example.trustline.domain.use_cases
+package com.example.trustline.utils
 
 import android.util.Patterns
 

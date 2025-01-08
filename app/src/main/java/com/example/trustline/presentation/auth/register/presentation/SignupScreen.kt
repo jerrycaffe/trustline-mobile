@@ -1,4 +1,4 @@
-package com.example.trustline.presentation
+package com.example.trustline.presentation.auth.register.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -43,9 +43,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.trustline.PrimaryButton
 import com.example.trustline.R
-import com.example.trustline.TrustlineTitle
+import com.example.trustline.presentation.common.PrimaryButton
+import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable

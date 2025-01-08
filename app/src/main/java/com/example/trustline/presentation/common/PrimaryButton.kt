@@ -1,4 +1,4 @@
-package com.example.trustline
+package com.example.trustline.presentation.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import com.example.trustline.R
 
 @Composable
 fun PrimaryButton(title: String, enabled: Boolean = true, onButtonClicked: () -> Unit) {

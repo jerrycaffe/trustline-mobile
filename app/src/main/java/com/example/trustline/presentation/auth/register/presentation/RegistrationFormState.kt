@@ -1,4 +1,4 @@
-package com.example.trustline.presentation
+package com.example.trustline.presentation.auth.register.presentation
 
 data class RegistrationFormState(
     val email: String = "",

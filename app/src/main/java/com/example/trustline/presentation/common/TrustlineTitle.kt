@@ -1,4 +1,4 @@
-package com.example.trustline
+package com.example.trustline.presentation.common
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
