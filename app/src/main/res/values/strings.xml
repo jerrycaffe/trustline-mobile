@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">trustline</string>
     <string name="signup_title">create an account</string>
+    <string name="login_title">Welcome Back!</string>
+    <string name="login_description">Enter your details to login</string>
     <string name="email">"Email"</string>
     <string name="password">"Password"</string>
     <string name="sing_up">Sign up</string>
+    <string name="login">Login</string>
     <string name="app_logo">Trustline logo</string>
     <string name="phone_number">Phone number</string>
     <string name="hide_password">Hide Password</string>

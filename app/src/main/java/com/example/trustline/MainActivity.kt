@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.trustline.presentation.auth.register.presentation.SignupScreen
+import com.example.trustline.presentation.auth.login.presentation.LoginScreen
 import com.example.trustline.presentation.welcome.WelcomeView
 import com.example.trustline.ui.theme.TrustlineTheme
 
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
             TrustlineTheme {
                 Scaffold { innerPadding ->
 
-                    SignupScreen()
+                    LoginScreen()
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.example.trustline.presentation.auth.register.presentation
+package com.example.trustline.presentation.auth.login.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -49,8 +49,8 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
-    val viewModel = viewModel<SignupViewModel>()
+fun LoginScreen(modifier: Modifier = Modifier) {
+    val viewModel = viewModel<LoginViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
 
@@ -64,8 +64,8 @@ fun SignupScreen(modifier: Modifier = Modifier) {
         LaunchedEffect(key1 = context) {
             viewModel.validationEvents.collect { event ->
                 when (event) {
-                    is SignupViewModel.ValidationEvent.Success -> {
-                        Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                    is LoginViewModel.ValidationEvent.Success -> {
+                        Toast.makeText(context, "Login successful", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -90,10 +90,10 @@ fun SignupScreen(modifier: Modifier = Modifier) {
         ) {
             Text(
                 style = MaterialTheme.typography.titleMedium,
-                text = stringResource(id = R.string.signup_title)
+                text = stringResource(id = R.string.login_title)
             )
             Text(
-                text = stringResource(id = R.string.signup_description)
+                text = stringResource(id = R.string.login_description)
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
             Column(
@@ -104,34 +104,25 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     placeHolder = stringResource(id = R.string.email),
                     keyboardType = KeyboardType.Email,
                     onValueChanged = {
-                        viewModel.onEvent(RegistrationFormEvent.EmailChanged(it))
+                        viewModel.onEvent(LoginFormEvent.EmailChanged(it))
 
                     })
                 //Display error
                 if (state.emailError != null) displayErrorMessage(state.emailError)
 
                 InputTextBox(
-                    value = state.phoneNumber,
-                    placeHolder = stringResource(id = R.string.phone_number),
-                    isError = state.phoneNumberError != null,
-                    keyboardType = KeyboardType.Phone,
-                    onValueChanged = {
-                        viewModel.onEvent(RegistrationFormEvent.PhoneNumberChanged(it))
-                    })
-                if (state.phoneNumberError != null) displayErrorMessage(state.phoneNumberError)
-                InputTextBox(
                     value = state.password,
                     isError = state.passwordError != null,
                     keyboardType = KeyboardType.Password,
                     placeHolder = stringResource(id = R.string.password),
-                    onValueChanged = { viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it)) },
+                    onValueChanged = { viewModel.onEvent(LoginFormEvent.PasswordChanged(it)) },
                     isPasswordField = true
                 )
                 if (state.passwordError != null) displayErrorMessage(state.passwordError)
-                PrimaryButton(title = stringResource(id = R.string.sing_up),
+                PrimaryButton(title = stringResource(id = R.string.login),
                     enabled = state.isAllFieldValid,
                     onButtonClicked = {
-                        viewModel.onEvent((RegistrationFormEvent.Submit))
+                        viewModel.onEvent((LoginFormEvent.Submit))
                     })
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty_four)))
@@ -201,7 +192,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
-            Text(text = "Login")
+            Text(text = "Sign up")
         }
 
     }
