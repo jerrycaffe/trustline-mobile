@@ -2,7 +2,7 @@ package com.example.trustline.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF493EB1)
+val primaryLight = Color(0xFF837AEF)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFF6E65D8)
 val onPrimaryContainerLight = Color(0xFFFFFFFF)
@@ -367,3 +367,5 @@ val accent6DarkHighContrast = Color(0xFFFFF9F9)
 val onAccent6DarkHighContrast = Color(0xFF000000)
 val accent6ContainerDarkHighContrast = Color(0xFFFFB6D4)
 val onAccent6ContainerDarkHighContrast = Color(0xFF000000)
+
+val customPrimary = Color(0xFF837AEF)

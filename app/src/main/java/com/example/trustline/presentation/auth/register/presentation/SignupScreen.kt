@@ -2,7 +2,6 @@ package com.example.trustline.presentation.auth.register.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,23 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -38,12 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.trustline.R
+import com.example.trustline.presentation.common.ErrorMessageComponent
+import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.PrimaryButton
 import com.example.trustline.presentation.common.TrustlineTitle
 
@@ -108,7 +97,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 
                     })
                 //Display error
-                if (state.emailError != null) displayErrorMessage(state.emailError)
+                if (state.emailError != null) ErrorMessageComponent(state.emailError)
 
                 InputTextBox(
                     value = state.phoneNumber,
@@ -118,7 +107,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     onValueChanged = {
                         viewModel.onEvent(RegistrationFormEvent.PhoneNumberChanged(it))
                     })
-                if (state.phoneNumberError != null) displayErrorMessage(state.phoneNumberError)
+                if (state.phoneNumberError != null) ErrorMessageComponent(state.phoneNumberError)
                 InputTextBox(
                     value = state.password,
                     isError = state.passwordError != null,
@@ -127,7 +116,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
                     onValueChanged = { viewModel.onEvent(RegistrationFormEvent.PasswordChanged(it)) },
                     isPasswordField = true
                 )
-                if (state.passwordError != null) displayErrorMessage(state.passwordError)
+                if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
                 PrimaryButton(title = stringResource(id = R.string.sing_up),
                     enabled = state.isAllFieldValid,
                     onButtonClicked = {
@@ -209,66 +198,5 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 
 }
 
-@Composable
-fun InputTextBox(
-    value: String,
-    placeHolder: String,
-    isPasswordField: Boolean = false,
-    isError: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text,
 
-    onValueChanged: (String) -> Unit
-) {
-    var isFocused by remember { mutableStateOf(false) }
-    var showPassword by remember { mutableStateOf(false) }
-    val borderColor = if (isError) MaterialTheme.colorScheme.error else Color.LightGray
-    BasicTextField(modifier = Modifier.onFocusChanged { focusedState ->
-        isFocused = focusedState.isFocused
-    },
-        visualTransformation = if (isPasswordField && !showPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        singleLine = true,
-        value = value,
-        onValueChange = onValueChanged,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        1.dp, borderColor, MaterialTheme.shapes.small
-                    )
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-                    .height(dimensionResource(id = R.dimen.height_semi_tall)),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Absolute.SpaceBetween
-            ) {
-                if (value.isEmpty() && !isFocused) {
-                    Text(
-                        color = colorResource(id = R.color.deep_grey), text = placeHolder
-                    )
-                }
-                innerTextField()
-                if (isPasswordField) {
-                    IconButton(onClick = { showPassword = !showPassword }
 
-                    ) {
-                        Icon(
-                            tint = colorResource(id = R.color.deep_grey),
-                            painter = if (showPassword) painterResource(R.drawable.eye_opened) else painterResource(
-                                R.drawable.eye_closed
-                            ),
-                            contentDescription = if (showPassword) stringResource(id = R.string.hide_password) else stringResource(
-                                id = R.string.show_password
-                            )
-                        )
-                    }
-                }
-
-            }
-        })
-}
-
-@Composable
-fun displayErrorMessage(errorMessage: String) {
-    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
-}

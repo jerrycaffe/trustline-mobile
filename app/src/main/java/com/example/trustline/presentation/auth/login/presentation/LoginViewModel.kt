@@ -8,17 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trustline.utils.ValidateEmail
 import com.example.trustline.utils.ValidatePassword
-import com.example.trustline.utils.ValidatePhoneNumber
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePhoneNumber: ValidatePhoneNumber = ValidatePhoneNumber(),
     private val validatePassword: ValidatePassword = ValidatePassword()
 ) : ViewModel() {
     var state by mutableStateOf(LoginFormState())
+
     private val validationEventChannel = Channel<ValidationEvent>()
 
     val validationEvents = validationEventChannel.receiveAsFlow()
@@ -39,8 +38,7 @@ class LoginViewModel(
                 state =
                     state.copy(
                         email = event.email,
-                        emailError = emailError,
-                        isAllFieldValid = allFieldsValid
+                        emailError = emailError
                     )
             }
 
@@ -56,8 +54,7 @@ class LoginViewModel(
                 state =
                     state.copy(
                         password = event.password,
-                        passwordError = passwordError,
-                        isAllFieldValid = allFieldsValid
+                        passwordError = passwordError
                     )
             }
 

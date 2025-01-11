@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import com.example.trustline.R
 
@@ -18,10 +19,10 @@ fun PrimaryButton(title: String, enabled: Boolean = true, onButtonClicked: () ->
             .fillMaxWidth()
             .height(dimensionResource(id = R.dimen.height_fifty_two)),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            disabledContainerColor = MaterialTheme.colorScheme.inversePrimary,
-            disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = colorResource(id = R.color.primary),
+            contentColor = colorResource(id = R.color.white_2),
+            disabledContainerColor = colorResource(id = R.color.primary_accent),
+            disabledContentColor = colorResource(id = R.color.white)
         ),
         enabled = enabled,
         shape = MaterialTheme.shapes.small,

@@ -5,10 +5,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.example.trustline.R
 
 @Composable
 fun TrustlineTitle(
-    textColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    textColor: Color = colorResource(id = R.color.primary),
     modifier: Modifier = Modifier
 ) {
     Text(

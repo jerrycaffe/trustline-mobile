@@ -2,7 +2,7 @@ package com.example.trustline.presentation.auth.login.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,38 +13,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.trustline.R
+import com.example.trustline.presentation.common.ErrorMessageComponent
+import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.PrimaryButton
+import com.example.trustline.presentation.common.TermsAndConditionSection
 import com.example.trustline.presentation.common.TrustlineTitle
 
 
@@ -53,11 +43,14 @@ fun LoginScreen(modifier: Modifier = Modifier) {
     val viewModel = viewModel<LoginViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.padding_medium))
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .pointerInput(Unit) {
+            detectTapGestures { focusManager.clearFocus() }
+        }
+        .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
         //if validation is successful
@@ -108,7 +101,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
                     })
                 //Display error
-                if (state.emailError != null) displayErrorMessage(state.emailError)
+                if (state.emailError != null) ErrorMessageComponent(state.emailError)
 
                 InputTextBox(
                     value = state.password,
@@ -118,14 +111,20 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     onValueChanged = { viewModel.onEvent(LoginFormEvent.PasswordChanged(it)) },
                     isPasswordField = true
                 )
-                if (state.passwordError != null) displayErrorMessage(state.passwordError)
+                if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
                 PrimaryButton(title = stringResource(id = R.string.login),
                     enabled = state.isAllFieldValid,
                     onButtonClicked = {
                         viewModel.onEvent((LoginFormEvent.Submit))
                     })
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty_four)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twelve)))
+            Text(
+                modifier = Modifier.align(Alignment.End),
+                color = colorResource(id = R.color.primary),
+                text = "Forgot Password?"
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.height_twenty_four))
             ) {
@@ -159,28 +158,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         contentDescription = stringResource(id = R.string.app_logo)
                     )
                 }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(buildAnnotatedString {
-                        withStyle(style = SpanStyle(colorResource(id = R.color.deep_grey))) {
-                            append(
-                                "By clicking continue, you agree to our "
-                            )
-                        }
-                        append("Terms")
-                    })
-                    Text(buildAnnotatedString {
-                        append("of Service")
-                        withStyle(style = SpanStyle(color = colorResource(id = R.color.deep_grey))) {
-                            append(
-                                " and "
-                            )
-                        }
-                        append("Privacy Policy")
-                    })
-                }
+                TermsAndConditionSection()
             }
         }
 
@@ -192,7 +170,9 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
-            Text(text = "Sign up")
+            Text(
+                style = MaterialTheme.typography.titleSmall, text = "Sign up"
+            )
         }
 
     }
@@ -200,66 +180,6 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
 }
 
-@Composable
-fun InputTextBox(
-    value: String,
-    placeHolder: String,
-    isPasswordField: Boolean = false,
-    isError: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text,
 
-    onValueChanged: (String) -> Unit
-) {
-    var isFocused by remember { mutableStateOf(false) }
-    var showPassword by remember { mutableStateOf(false) }
-    val borderColor = if (isError) MaterialTheme.colorScheme.error else Color.LightGray
-    BasicTextField(modifier = Modifier.onFocusChanged { focusedState ->
-        isFocused = focusedState.isFocused
-    },
-        visualTransformation = if (isPasswordField && !showPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        singleLine = true,
-        value = value,
-        onValueChange = onValueChanged,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        1.dp, borderColor, MaterialTheme.shapes.small
-                    )
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-                    .height(dimensionResource(id = R.dimen.height_semi_tall)),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Absolute.SpaceBetween
-            ) {
-                if (value.isEmpty() && !isFocused) {
-                    Text(
-                        color = colorResource(id = R.color.deep_grey), text = placeHolder
-                    )
-                }
-                innerTextField()
-                if (isPasswordField) {
-                    IconButton(onClick = { showPassword = !showPassword }
 
-                    ) {
-                        Icon(
-                            tint = colorResource(id = R.color.deep_grey),
-                            painter = if (showPassword) painterResource(R.drawable.eye_opened) else painterResource(
-                                R.drawable.eye_closed
-                            ),
-                            contentDescription = if (showPassword) stringResource(id = R.string.hide_password) else stringResource(
-                                id = R.string.show_password
-                            )
-                        )
-                    }
-                }
 
-            }
-        })
-}
-
-@Composable
-fun displayErrorMessage(errorMessage: String) {
-    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
-}
