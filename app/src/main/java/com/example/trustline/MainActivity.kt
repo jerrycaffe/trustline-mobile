@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.trustline.presentation.auth.login.presentation.LoginScreen
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.trustline.navigation.AppNavigation
 import com.example.trustline.presentation.welcome.WelcomeView
 import com.example.trustline.ui.theme.TrustlineTheme
 
@@ -18,8 +20,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             TrustlineTheme {
                 Scaffold { innerPadding ->
-
-                    LoginScreen()
+                    val controller: NavController = rememberNavController()
+                    val viewModel = MainViewModel()
+                    AppNavigation(navController = controller, viewModel = viewModel)
                 }
             }
         }

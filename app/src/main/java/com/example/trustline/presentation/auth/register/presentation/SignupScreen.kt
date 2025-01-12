@@ -2,6 +2,7 @@ package com.example.trustline.presentation.auth.register.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -190,7 +191,10 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
-            Text(text = "Login")
+
+            Text(modifier = Modifier.clickable { navController }, text = "Login")
+
+
         }
 
     }
