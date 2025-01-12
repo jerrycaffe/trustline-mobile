@@ -28,10 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.trustline.R
+import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.PrimaryButton
@@ -39,7 +42,7 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
+fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val viewModel = viewModel<SignupViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
@@ -192,7 +195,11 @@ fun SignupScreen(modifier: Modifier = Modifier) {
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
 
-            Text(modifier = Modifier.clickable { navController }, text = "Login")
+            Text(
+                modifier = Modifier.clickable { navController.navigate(Routes.LOGIN.name) },
+                text = "Login",
+                textDecoration = TextDecoration.Underline
+            )
 
 
         }

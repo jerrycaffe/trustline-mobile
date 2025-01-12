@@ -2,6 +2,7 @@ package com.example.trustline.presentation.auth.login.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,9 +29,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.trustline.R
+import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.PrimaryButton
@@ -39,7 +43,7 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(navHostController: NavHostController, modifier: Modifier = Modifier) {
     val viewModel = viewModel<LoginViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
@@ -171,7 +175,10 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
             Text(
-                style = MaterialTheme.typography.titleSmall, text = "Sign up"
+                modifier = Modifier
+                    .clickable { navHostController.navigate(Routes.REGISTER.name) },
+                style = MaterialTheme.typography.titleSmall, text = "Sign up",
+                textDecoration = TextDecoration.Underline
             )
         }
 
