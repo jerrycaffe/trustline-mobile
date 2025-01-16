@@ -1,10 +1,8 @@
-package com.example.trustline.presentation.auth.login.presentation
+package com.example.trustline.presentation.auth.forgot_password.presentation
 
 data class ForgotPasswordFormState(
     val email: String = "",
-    val emailError: String? = null,
-    val password: String = "",
-    val passwordError: String? = null
+    val emailError: String? = null
 )
 
-val ForgotPasswordFormState.isAllFieldValid: Boolean get() = email != "" && password != "" && emailError == null && passwordError == null
+val ForgotPasswordFormState.isFieldValid: Boolean get() = email != "" && emailError == null

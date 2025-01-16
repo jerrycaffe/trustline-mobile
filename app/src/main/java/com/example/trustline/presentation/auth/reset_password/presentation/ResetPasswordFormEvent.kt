@@ -1,7 +1,8 @@
-package com.example.trustline.presentation.auth.login.presentation
+package com.example.trustline.presentation.auth.reset_password.presentation
+
 
 sealed class ResetPasswordFormEvent {
-    data class EmailChanged(val email: String) : LoginFormEvent()
-    data class PasswordChanged(val password: String) : LoginFormEvent()
-    data object Submit : LoginFormEvent()
+    data class PasswordChanged(val password: String) : ResetPasswordFormEvent()
+    data class ConfirmPasswordChanged(val confirmPassword: String) : ResetPasswordFormEvent()
+    data object Submit : ResetPasswordFormEvent()
 }

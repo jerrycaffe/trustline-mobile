@@ -43,7 +43,7 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun LoginScreen(navHostController: NavHostController, modifier: Modifier = Modifier) {
+fun LoginScreen(navCOntroller: NavHostController, modifier: Modifier = Modifier) {
     val viewModel = viewModel<LoginViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
@@ -124,7 +124,9 @@ fun LoginScreen(navHostController: NavHostController, modifier: Modifier = Modif
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twelve)))
             Text(
-                modifier = Modifier.align(Alignment.End),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable { navCOntroller.navigate(Routes.FORGOT_PASSWORD.name) },
                 color = colorResource(id = R.color.primary),
                 text = "Forgot Password?"
             )
@@ -176,7 +178,7 @@ fun LoginScreen(navHostController: NavHostController, modifier: Modifier = Modif
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
             Text(
                 modifier = Modifier
-                    .clickable { navHostController.navigate(Routes.REGISTER.name) },
+                    .clickable { navCOntroller.navigate(Routes.REGISTER.name) },
                 style = MaterialTheme.typography.titleSmall, text = "Sign up",
                 textDecoration = TextDecoration.Underline
             )

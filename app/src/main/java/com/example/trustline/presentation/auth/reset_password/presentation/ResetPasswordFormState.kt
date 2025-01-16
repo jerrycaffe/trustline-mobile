@@ -1,10 +1,10 @@
-package com.example.trustline.presentation.auth.login.presentation
+package com.example.trustline.presentation.auth.reset_password.presentation
 
 data class ResetPasswordFormState(
-    val email: String = "",
-    val emailError: String? = null,
     val password: String = "",
-    val passwordError: String? = null
+    val passwordError: String? = null,
+    val confirmPassword: String = "",
+    val confirmPasswordError: String? = null
 )
 
-val ResetPasswordFormState.isAllFieldValid: Boolean get() = email != "" && password != "" && emailError == null && passwordError == null
+val ResetPasswordFormState.isAllFieldValid: Boolean get() = password != "" && confirmPassword != "" && password == confirmPassword && passwordError == null && confirmPasswordError == null

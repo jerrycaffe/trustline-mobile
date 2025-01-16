@@ -4,6 +4,7 @@
     <dimen name="height_twelve">12dp</dimen>
     <dimen name="padding_semi_medium">14dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
+    <dimen name="height_twenty">20dp</dimen>
     <dimen name="padding_semi_large">24dp</dimen>
     <dimen name="padding_large">36dp</dimen>
     <dimen name="padding_one_hundred_and_five">105dp</dimen>

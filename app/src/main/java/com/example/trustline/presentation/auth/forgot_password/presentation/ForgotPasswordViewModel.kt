@@ -1,4 +1,4 @@
-package com.example.trustline.presentation.auth.login.presentation
+package com.example.trustline.presentation.auth.forgot_password.presentation
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,33 +7,29 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trustline.utils.ValidateEmail
-import com.example.trustline.utils.ValidatePassword
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class ResetPasswordViewModel(
-    private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePassword: ValidatePassword = ValidatePassword()
+class ForgotPasswordViewModel(
+    private val validateEmail: ValidateEmail = ValidateEmail()
 ) : ViewModel() {
-    var state by mutableStateOf(LoginFormState())
+    var state by mutableStateOf(ForgotPasswordFormState())
 
     private val validationEventChannel = Channel<ValidationEvent>()
 
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    fun onEvent(event: LoginFormEvent) {
+    fun onEvent(event: ForgotPasswordFormEvent) {
         when (event) {
-            is LoginFormEvent.EmailChanged -> {
+            is ForgotPasswordFormEvent.EmailChanged -> {
 
                 //validate the email field
                 //check if all the field are valid and turn on the submit the button
                 val emailError = validateEmail.execute(state.email).errorMessage
                 val allFieldsValid: Boolean =
                     if (state.email != ""
-                        && state.password != ""
                         && state.emailError == null
-                        && state.passwordError == null
                     ) true else false
                 state =
                     state.copy(
@@ -43,22 +39,7 @@ class ResetPasswordViewModel(
             }
 
 
-            is LoginFormEvent.PasswordChanged -> {
-                val passwordError = validatePassword.execute(state.password).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.email != ""
-                        && state.password != ""
-                        && state.emailError == null
-                        && state.passwordError == null
-                    ) true else false
-                state =
-                    state.copy(
-                        password = event.password,
-                        passwordError = passwordError
-                    )
-            }
-
-            LoginFormEvent.Submit -> {
+            ForgotPasswordFormEvent.Submit -> {
                 submitData()
             }
         }
@@ -66,26 +47,20 @@ class ResetPasswordViewModel(
 
     private fun submitData() {
         val emailResult = validateEmail.execute(state.email)
-        val passwordResult = validatePassword.execute(state.password)
 
-        val hasError = listOf(
-            emailResult, passwordResult
-        ).any { !it.successful }
 
-        if (hasError) {
-            state = state.copy(
-                emailError = emailResult.errorMessage,
-                passwordError = passwordResult.errorMessage
+
+        state = if (!emailResult.successful) {
+            state.copy(
+                emailError = emailResult.errorMessage
             )
 
         } else {
-            state = state.copy(
-                emailError = null,
-                passwordError = null
+            state.copy(
+                emailError = null
             )
         }
         Log.d("STATE", state.email)
-        Log.d("STATE", state.password)
 
         viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }
 

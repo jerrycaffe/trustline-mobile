@@ -1,8 +1,7 @@
-package com.example.trustline.presentation.auth.login.presentation
+package com.example.trustline.presentation.auth.reset_password.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.R
-import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.PrimaryButton
@@ -44,8 +42,8 @@ import com.example.trustline.presentation.common.TermsAndConditionSection
 
 @Composable
 fun ResetPasswordScreen(
-    navHostController: NavHostController,
-    innerPadding: Dp,
+    navController: NavHostController,
+    innerPadding: Dp = 16.dp,
     modifier: Modifier = Modifier
 ) {
     val viewModel = viewModel<ResetPasswordViewModel>()
@@ -104,30 +102,21 @@ fun ResetPasswordScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
-                InputTextBox(value = state.email,
-                    isError = state.emailError != null,
-                    placeHolder = stringResource(id = R.string.email),
-                    keyboardType = KeyboardType.Email,
-                    onValueChanged = {
-                        viewModel.onEvent(LoginFormEvent.EmailChanged(it))
 
-                    })
-                //Display error
-                if (state.emailError != null) ErrorMessageComponent(state.emailError)
 
                 InputTextBox(
                     value = state.password,
                     isError = state.passwordError != null,
                     keyboardType = KeyboardType.Password,
                     placeHolder = stringResource(id = R.string.password),
-                    onValueChanged = { viewModel.onEvent(LoginFormEvent.PasswordChanged(it)) },
+                    onValueChanged = { viewModel.onEvent(ResetPasswordFormEvent.PasswordChanged(it)) },
                     isPasswordField = true
                 )
                 if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
                 PrimaryButton(title = stringResource(id = R.string.login),
                     enabled = state.isAllFieldValid,
                     onButtonClicked = {
-                        viewModel.onEvent((LoginFormEvent.Submit))
+                        viewModel.onEvent((ResetPasswordFormEvent.Submit))
                     })
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twelve)))
@@ -183,8 +172,7 @@ fun ResetPasswordScreen(
         ) {
             Text(color = colorResource(id = R.color.deep_grey), text = "Already have an account? ")
             Text(
-                modifier = Modifier
-                    .clickable { navHostController.navigate(Routes.REGISTER.name) },
+
                 style = MaterialTheme.typography.titleSmall, text = "Sign up",
                 textDecoration = TextDecoration.Underline
             )
