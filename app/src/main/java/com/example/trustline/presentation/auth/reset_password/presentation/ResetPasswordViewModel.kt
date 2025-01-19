@@ -1,60 +1,73 @@
 package com.example.trustline.presentation.auth.reset_password.presentation
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trustline.utils.ValidateConfirmPassword
 import com.example.trustline.utils.ValidatePassword
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ResetPasswordViewModel(
     private val validatePassword: ValidatePassword = ValidatePassword(),
     private val validateConfirmPassword: ValidateConfirmPassword = ValidateConfirmPassword()
 ) : ViewModel() {
-    var state by mutableStateOf(ResetPasswordFormState())
+    private val _state = MutableStateFlow(ResetPasswordFormState())
 
-    private val validationEventChannel = Channel<ValidationEvent>()
+    val resetPasswordState: StateFlow<ResetPasswordFormState> = _state
+    private val _validationEventChannel = Channel<ValidationEvent>()
 
-    val validationEvents = validationEventChannel.receiveAsFlow()
+    val validationEvents = _validationEventChannel.receiveAsFlow()
+
+
+    //    update password and validate
+
+
+    private fun onPasswordChange(password: String) {
+        val validatePasswordResult = validatePassword.execute(password)
+        _state.update { passwordState ->
+            passwordState.copy(
+                password = password,
+                passwordError = validatePasswordResult.errorMessage
+            )
+        }
+    }
+
+    //update confirm password and validate
+    private fun onConfirmPasswordChange(confirmPassword: String) {
+        val validatePasswordResult =
+            validateConfirmPassword.execute(confirmPassword, resetPasswordState.value.password)
+        _state.update { passwordState ->
+            passwordState.copy(
+                confirmPassword = confirmPassword,
+                confirmPasswordError = validatePasswordResult.errorMessage
+            )
+        }
+
+
+    }
+
+    fun isPasswordMatch(): Boolean {
+        return resetPasswordState.value.passwordError == null
+                && resetPasswordState.value.confirmPasswordError == null
+                && resetPasswordState.value.password != ""
+                && resetPasswordState.value.confirmPassword != ""
+    }
+
 
     fun onEvent(event: ResetPasswordFormEvent) {
+
         when (event) {
-
-
             is ResetPasswordFormEvent.PasswordChanged -> {
-                val passwordError = validatePassword.execute(state.password).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.password != ""
-                        && state.passwordError == null
-                        && state.confirmPassword != ""
-                    ) true else false
-                state =
-                    state.copy(
-                        password = event.password,
-                        passwordError = passwordError
-                    )
+
+                onPasswordChange(event.password)
             }
 
             is ResetPasswordFormEvent.ConfirmPasswordChanged -> {
-                val confirmPasswordError = validateConfirmPassword.execute(
-                    state.password,
-                    state.confirmPassword
-                ).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.password != ""
-                        && state.passwordError == null
-                        && state.confirmPassword != ""
-                    ) true else false
-                state =
-                    state.copy(
-                        password = event.confirmPassword,
-                        passwordError = confirmPasswordError
-                    )
+                onConfirmPasswordChange(event.confirmPassword)
             }
 
             ResetPasswordFormEvent.Submit -> {
@@ -63,33 +76,9 @@ class ResetPasswordViewModel(
         }
     }
 
+
     private fun submitData() {
-        val passwordResult = validatePassword.execute(state.password)
-        val confirmPasswordResult =
-            validateConfirmPassword.execute(state.password, state.confirmPassword)
-
-        val hasError = listOf(
-            passwordResult, confirmPasswordResult
-        ).any { !it.successful }
-
-        if (hasError) {
-            state = state.copy(
-
-                passwordError = passwordResult.errorMessage,
-                confirmPasswordError = confirmPasswordResult.errorMessage
-            )
-
-        } else {
-            state = state.copy(
-                confirmPasswordError = null,
-                passwordError = null
-            )
-        }
-        Log.d("STATE", state.confirmPassword)
-        Log.d("STATE", state.password)
-
-        viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }
-
+        viewModelScope.launch { _validationEventChannel.send(ValidationEvent.Success) }
     }
 
     sealed class ValidationEvent {

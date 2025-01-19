@@ -29,7 +29,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -181,8 +180,7 @@ fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier
 
             Text(
                 modifier = Modifier.clickable { navController.navigate(Routes.LOGIN.name) },
-                text = "Login",
-                textDecoration = TextDecoration.Underline
+                text = "Login"
             )
 
 

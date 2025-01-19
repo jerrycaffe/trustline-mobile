@@ -4,7 +4,8 @@ data class ResetPasswordFormState(
     val password: String = "",
     val passwordError: String? = null,
     val confirmPassword: String = "",
-    val confirmPasswordError: String? = null
+    val confirmPasswordError: String? = null,
+    val isAllFieldValid: Boolean = false
 )
 
-val ResetPasswordFormState.isAllFieldValid: Boolean get() = password != "" && confirmPassword != "" && password == confirmPassword && passwordError == null && confirmPasswordError == null
+//val ResetPasswordFormState.isAllFieldValid: Boolean get() = password != "" && confirmPassword != "" && password == confirmPassword && passwordError == null && confirmPasswordError == null

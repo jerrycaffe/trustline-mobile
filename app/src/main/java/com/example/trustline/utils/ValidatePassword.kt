@@ -2,6 +2,7 @@ package com.example.trustline.utils
 
 class ValidatePassword {
     fun execute(password: String): ValidationResult {
+     
         if (password.length < 8) return ValidationResult(
             false, "Password must contain least 6 characters"
         )
