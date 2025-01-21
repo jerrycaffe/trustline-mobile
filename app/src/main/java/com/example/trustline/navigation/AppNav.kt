@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.trustline.MainViewModel
 import com.example.trustline.presentation.auth.forgot_password.presentation.ForgotPasswordScreen
 import com.example.trustline.presentation.auth.login.presentation.LoginScreen
+import com.example.trustline.presentation.auth.otp.presentation.OtpVerificationScreen
 import com.example.trustline.presentation.auth.register.presentation.SignupScreen
 import com.example.trustline.presentation.auth.reset_password.presentation.ResetPasswordScreen
 
@@ -16,7 +17,7 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenConfiguration.UnauthenticatedScreen.Register.route
+        startDestination = ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route
     ) {
         composable(ScreenConfiguration.UnauthenticatedScreen.Register.route) {
             SignupScreen(navController)
@@ -34,6 +35,9 @@ fun AppNavigation(
             ResetPasswordScreen(
                 navController
             )
+        }
+        composable(ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route) {
+            OtpVerificationScreen(navController)
         }
 
     }

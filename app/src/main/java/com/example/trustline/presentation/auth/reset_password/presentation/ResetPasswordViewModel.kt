@@ -59,16 +59,10 @@ class ResetPasswordViewModel(
 
 
     fun onEvent(event: ResetPasswordFormEvent) {
-
         when (event) {
-            is ResetPasswordFormEvent.PasswordChanged -> {
+            is ResetPasswordFormEvent.PasswordChanged -> onPasswordChange(event.password)
 
-                onPasswordChange(event.password)
-            }
-
-            is ResetPasswordFormEvent.ConfirmPasswordChanged -> {
-                onConfirmPasswordChange(event.confirmPassword)
-            }
+            is ResetPasswordFormEvent.ConfirmPasswordChanged -> onConfirmPasswordChange(event.confirmPassword)
 
             ResetPasswordFormEvent.Submit -> {
                 submitData()

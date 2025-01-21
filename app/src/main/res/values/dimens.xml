@@ -15,6 +15,7 @@
     <dimen name="height_ninety_four">94dp</dimen>
     <dimen name="height_forty">40dp</dimen>
     <dimen name="height_fifty_two">52dp</dimen>
+    <dimen name="height_fifty">50dp</dimen>
     <dimen name="height_twenty_four">24dp</dimen>
     <dimen name="space_ten">10dp</dimen>
     <dimen name="space_sixteen">16dp</dimen>

@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -91,21 +92,25 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty)))
 
-            InputTextBox(value = state.email,
-                isError = state.emailError != null,
-                placeHolder = stringResource(id = R.string.email),
-                keyboardType = KeyboardType.Email,
+            InputTextBox(value = state.phoneNumber,
+                isError = state.phoneNumberError != null,
+                placeHolder = stringResource(id = R.string.phone_number),
+                keyboardType = KeyboardType.Phone,
                 onValueChanged = {
-                    viewModel.onEvent(ForgotPasswordFormEvent.EmailChanged(it))
+                    viewModel.onEvent(ForgotPasswordFormEvent.PhoneNumberChanged(it))
 
                 })
             //Display error
-            if (state.emailError != null) ErrorMessageComponent(state.emailError)
+            if (state.phoneNumberError != null) Row(modifier = Modifier.align(Alignment.Start)) {
+                ErrorMessageComponent(
+                    state.phoneNumberError
+                )
+            }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
 
             PrimaryButton(title = stringResource(id = R.string.submit),
-                enabled = state.isFieldValid,
+                enabled = viewModel.isPhoneNumberFieldValid(),
                 onButtonClicked = {
                     viewModel.onEvent((ForgotPasswordFormEvent.Submit))
                 })

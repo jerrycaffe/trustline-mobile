@@ -2,14 +2,14 @@ package com.example.trustline.utils
 
 class ValidatePhoneNumber {
     fun execute(phoneNumber: String): ValidationResult {
-        if (phoneNumber.length <= 9) return ValidationResult(
+        if (phoneNumber.length <= 10) return ValidationResult(
             false, "Phone number must be 11 digit long"
         )
 
         if (!phoneNumberValid(phoneNumber)) return ValidationResult(
             false, "Phone number must be of patter 08081234567 or +23480273625"
         )
-        return ValidationResult(true, errorMessage = null)
+        return ValidationResult(true)
     }
 
     private fun phoneNumberValid(phoneNumber: String): Boolean {

@@ -22,45 +22,39 @@ class LoginViewModel(
 
     val validationEvents = validationEventChannel.receiveAsFlow()
 
+
+    fun isAllFieldMatch(): Boolean {
+        return state.email != ""
+                && state.password != ""
+                && state.emailError == null
+                && state.passwordError == null
+    }
+
+    private fun onEmailChanged(email: String) {
+        val emailError = validateEmail.execute(email).errorMessage
+        state =
+            state.copy(
+                email = email,
+                emailError = emailError
+            )
+    }
+
+    private fun onPasswordPasswordChanged(password: String) {
+        val passwordError = validatePassword.execute(password).errorMessage
+        state =
+            state.copy(
+                password = password,
+                passwordError = passwordError
+            )
+    }
+
     fun onEvent(event: LoginFormEvent) {
         when (event) {
-            is LoginFormEvent.EmailChanged -> {
+            is LoginFormEvent.EmailChanged -> onEmailChanged(event.email)
 
-                //validate the email field
-                //check if all the field are valid and turn on the submit the button
-                val emailError = validateEmail.execute(state.email).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.email != ""
-                        && state.password != ""
-                        && state.emailError == null
-                        && state.passwordError == null
-                    ) true else false
-                state =
-                    state.copy(
-                        email = event.email,
-                        emailError = emailError
-                    )
-            }
+            is LoginFormEvent.PasswordChanged -> onPasswordPasswordChanged(event.password)
 
-
-            is LoginFormEvent.PasswordChanged -> {
-                val passwordError = validatePassword.execute(state.password).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.email != ""
-                        && state.password != ""
-                        && state.emailError == null
-                        && state.passwordError == null
-                    ) true else false
-                state =
-                    state.copy(
-                        password = event.password,
-                        passwordError = passwordError
-                    )
-            }
-
-            LoginFormEvent.Submit -> {
-                submitData()
-            }
+            LoginFormEvent.Submit -> submitData()
         }
     }
 

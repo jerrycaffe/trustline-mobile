@@ -126,7 +126,7 @@ fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier
                 )
                 if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
                 PrimaryButton(title = stringResource(id = R.string.sing_up),
-                    enabled = state.isAllFieldValid,
+                    enabled = viewModel.isAllFieldValid(),
                     onButtonClicked = {
                         viewModel.onEvent((RegistrationFormEvent.Submit))
                     })

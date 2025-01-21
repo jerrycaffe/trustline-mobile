@@ -116,7 +116,7 @@ fun LoginScreen(navCOntroller: NavHostController, modifier: Modifier = Modifier)
                 )
                 if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
                 PrimaryButton(title = stringResource(id = R.string.login),
-                    enabled = state.isAllFieldValid,
+                    enabled = viewModel.isAllFieldMatch(),
                     onButtonClicked = {
                         viewModel.onEvent((LoginFormEvent.Submit))
                     })

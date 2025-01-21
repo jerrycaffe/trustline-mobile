@@ -1,6 +1,5 @@
 package com.example.trustline.presentation.auth.register.presentation
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,69 +22,56 @@ class SignupViewModel(
 
     val validationEvents = validationEventChannel.receiveAsFlow()
 
+    fun isAllFieldValid(): Boolean {
+        return state.email != ""
+                && state.phoneNumber != ""
+                && state.password != ""
+                && state.emailError == null
+                && state.phoneNumberError == null
+                && state.passwordError == null
+
+    }
+
+    private fun onPhoneNumberChanged(phoneNumber: String) {
+        val phoneNumberError = validatePhoneNumber.execute(phoneNumber).errorMessage
+        state =
+            state.copy(
+                phoneNumber = phoneNumber,
+                phoneNumberError = phoneNumberError,
+                isAllFieldValid = isAllFieldValid()
+            )
+    }
+
+    private fun onEmailChanged(email: String) {
+        val emailError = validateEmail.execute(email).errorMessage
+        state =
+            state.copy(
+                email = email,
+                emailError = emailError,
+                isAllFieldValid = isAllFieldValid()
+            )
+    }
+
+    private fun onChangePassword(password: String) {
+        val passwordError = validatePassword.execute(password).errorMessage
+        state =
+            state.copy(
+                password = password,
+                passwordError = passwordError,
+                isAllFieldValid = isAllFieldValid()
+            )
+    }
+
     fun onEvent(event: RegistrationFormEvent) {
         when (event) {
-            is RegistrationFormEvent.EmailChanged -> {
+            is RegistrationFormEvent.EmailChanged -> onEmailChanged(event.email)
 
-                //validate the email field
-                //check if all the field are valid and turn on the submit the button
-                val emailError = validateEmail.execute(state.email).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.email != ""
-                        && state.phoneNumber != ""
-                        && state.password != ""
-                        && state.emailError == null
-                        && state.phoneNumberError == null
-                        && state.passwordError == null
-                    ) true else false
-                state =
-                    state.copy(
-                        email = event.email,
-                        emailError = emailError,
-                        isAllFieldValid = allFieldsValid
-                    )
-            }
+            is RegistrationFormEvent.PhoneNumberChanged -> onPhoneNumberChanged(event.phoneNumber)
 
-            is RegistrationFormEvent.PhoneNumberChanged -> {
-                val phoneNumberError = validatePhoneNumber.execute(state.phoneNumber).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.email != ""
-                        && state.phoneNumber != ""
-                        && state.password != ""
-                        && state.emailError == null
-                        && state.phoneNumberError == null
-                        && state.passwordError == null
-                    ) true else false
-                state =
-                    state.copy(
-                        phoneNumber = event.phoneNumber,
-                        phoneNumberError = phoneNumberError,
-                        isAllFieldValid = allFieldsValid
-                    )
+            is RegistrationFormEvent.PasswordChanged -> onChangePassword(event.password)
 
-            }
+            RegistrationFormEvent.Submit -> submitData()
 
-            is RegistrationFormEvent.PasswordChanged -> {
-                val passwordError = validatePassword.execute(state.password).errorMessage
-                val allFieldsValid: Boolean =
-                    if (state.email != ""
-                        && state.phoneNumber != ""
-                        && state.password != ""
-                        && state.emailError == null
-                        && state.phoneNumberError == null
-                        && state.passwordError == null
-                    ) true else false
-                state =
-                    state.copy(
-                        password = event.password,
-                        passwordError = passwordError,
-                        isAllFieldValid = allFieldsValid
-                    )
-            }
-
-            RegistrationFormEvent.Submit -> {
-                submitData()
-            }
         }
     }
 
@@ -112,10 +98,7 @@ class SignupViewModel(
                 phoneNumberError = null
             )
         }
-        Log.d("STATE", state.email)
-        Log.d("STATE", state.password)
-        Log.d("STATE", state.phoneNumber)
-        println(state.phoneNumberError)
+
 
         viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }
 
