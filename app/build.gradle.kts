@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.runtime:runtime")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.core.ktx)
