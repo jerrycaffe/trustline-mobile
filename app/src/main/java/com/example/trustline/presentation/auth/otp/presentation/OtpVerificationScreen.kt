@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,11 +40,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.R
 import com.example.trustline.presentation.auth.forgot_password.presentation.ForgotPasswordFormEvent
-import com.example.trustline.presentation.auth.forgot_password.presentation.OtpVerificationScreenViewModel
 import com.example.trustline.presentation.common.PrimaryButton
 
 @Composable
@@ -52,7 +53,7 @@ fun OtpVerificationScreen(navController: NavHostController, modifier: Modifier =
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-//    var otpValue = remember { mutableStateOf("") }
+    var otpValue by remember { mutableStateOf("") }
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -99,32 +100,25 @@ fun OtpVerificationScreen(navController: NavHostController, modifier: Modifier =
                 modifier = Modifier
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.otp_description)
+                text = stringResource(id = R.string.otp_description, "0808*****93")
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
-            var otpValue by remember { mutableStateOf("") }
+
             OtpTextField(
-                otpText = otpValue.toString(),
+                otpText = otpValue,
                 onOtpTextChange = { value, _ ->
                     otpValue = value
                 }
             )
 
-
-//            OTPTextField(
-//                value = otp, // Initial value
-//                onTextChanged = { otp = it },
-//                numDigits = 4, // Number of digits in OTP
-//                isMasked = true, // Mask digits for security
-//                digitContainerStyle = OtpTextFieldDefaults.outlinedContainer(), // Choose style (outlined or underlined)
-//                textStyle = MaterialTheme.typography.titleLarge, // Configure text style
-//                isError = false // Indicate whether the OTP field is in an error state
-//            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
+            Text(text = "01:54 sec")
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(text = "Didn’t receive code? Resend")
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
 
             PrimaryButton(title = stringResource(id = R.string.submit),
-                enabled = viewModel.isPhoneNumberFieldValid(),
+                enabled = otpValue.length == 6,
                 onButtonClicked = {
                     viewModel.onEvent((ForgotPasswordFormEvent.Submit))
                 })
@@ -161,7 +155,9 @@ fun OtpTextField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         decorationBox = {
-            Row(horizontalArrangement = Arrangement.Center) {
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
                 repeat(otpCount) { index ->
                     CharView(
                         index = index,
@@ -181,27 +177,29 @@ private fun CharView(
 ) {
     val isFocused = text.length == index
     val char = when {
-        index == text.length -> "0"
+        index == text.length -> "-"
         index > text.length -> ""
         else -> text[index].toString()
     }
     Text(
         modifier = Modifier
-            .width(40.dp)
+            .width(42.dp)
+            .height(42.dp)
             .border(
-                1.dp, when {
-                    isFocused -> Color.DarkGray
+                1.5.dp, when {
+                    isFocused || text.isNotBlank() -> colorResource(id = R.color.primary)
                     else -> Color.LightGray
-                }, RoundedCornerShape(8.dp)
+                }, RoundedCornerShape(10.dp)
             )
             .padding(2.dp),
         text = char,
         style = MaterialTheme.typography.titleLarge,
-        color = if (isFocused) {
+        color = if (isFocused || text.isNotBlank()) {
             Color.DarkGray
         } else {
             Color.LightGray
         },
+        fontSize = 24.sp,
         textAlign = TextAlign.Center
     )
 }
