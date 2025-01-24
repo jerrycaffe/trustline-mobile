@@ -2,6 +2,7 @@ package com.example.trustline.presentation.auth.otp.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.R
-import com.example.trustline.presentation.auth.forgot_password.presentation.ForgotPasswordFormEvent
 import com.example.trustline.presentation.common.PrimaryButton
 
 @Composable
@@ -112,15 +112,23 @@ fun OtpVerificationScreen(navController: NavHostController, modifier: Modifier =
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
-            Text(text = "01:54 sec")
+            Text(text = "${viewModel.timerText.value} sec")
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Didn’t receive code? Resend")
+            Row {
+                Text(text = "Didn’t receive code? ")
+                Text(
+                    text = "Resend",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.clickable { viewModel.resetCountDownTimer() })
+            }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
 
             PrimaryButton(title = stringResource(id = R.string.submit),
                 enabled = otpValue.length == 6,
                 onButtonClicked = {
-                    viewModel.onEvent((ForgotPasswordFormEvent.Submit))
+//                    viewModel.onEvent((ForgotPasswordFormEvent.Submit))
+                    viewModel.startCountDownTimer()
                 })
 
 
