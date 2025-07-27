@@ -17,7 +17,7 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route
+        startDestination = ScreenConfiguration.UnauthenticatedScreen.Register.route
     ) {
         composable(ScreenConfiguration.UnauthenticatedScreen.Register.route) {
             SignupScreen(navController)

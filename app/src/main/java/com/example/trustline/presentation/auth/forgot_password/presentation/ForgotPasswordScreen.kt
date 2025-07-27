@@ -42,7 +42,8 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    Box(modifier = Modifier
+    Box(
+        modifier = modifier
         .fillMaxSize()
         .pointerInput(Unit) {
             detectTapGestures { focusManager.clearFocus() }
@@ -78,7 +79,7 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
                     id = R.string.forgot_password_image
                 )
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
+            Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.height_forty)))
             Text(
                 style = MaterialTheme.typography.titleMedium,
                 text = stringResource(id = R.string.forgot_password)
@@ -92,7 +93,8 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty)))
 
-            InputTextBox(value = state.phoneNumber,
+            InputTextBox(
+                value = state.phoneNumber,
                 isError = state.phoneNumberError != null,
                 placeHolder = stringResource(id = R.string.phone_number),
                 keyboardType = KeyboardType.Phone,
@@ -109,7 +111,8 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
 
-            PrimaryButton(title = stringResource(id = R.string.submit),
+            PrimaryButton(
+                title = stringResource(id = R.string.submit),
                 enabled = viewModel.isPhoneNumberFieldValid(),
                 onButtonClicked = {
                     viewModel.onEvent((ForgotPasswordFormEvent.Submit))

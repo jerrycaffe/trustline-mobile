@@ -43,7 +43,7 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 @Composable
 fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-    val viewModel = viewModel<SignupViewModel>()
+    val viewModel: SignupViewModel = viewModel(factory = SignupViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -57,11 +57,12 @@ fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
+
         //if validation is successful
         LaunchedEffect(key1 = context) {
             viewModel.validationEvents.collect { event ->
                 when (event) {
-                    is SignupViewModel.ValidationEvent.Success -> {
+                    is ValidationEvent.Success -> {
                         Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
                     }
                 }
@@ -96,7 +97,8 @@ fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
-                InputTextBox(value = state.email,
+                InputTextBox(
+                    value = state.email,
                     isError = state.emailError != null,
                     placeHolder = stringResource(id = R.string.email),
                     keyboardType = KeyboardType.Email,
@@ -125,7 +127,9 @@ fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier
                     isPasswordField = true
                 )
                 if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
-                PrimaryButton(title = stringResource(id = R.string.sing_up),
+                if (state.apiError != null) ErrorMessageComponent(state.apiError)
+                PrimaryButton(
+                    title = stringResource(id = R.string.sing_up),
                     enabled = viewModel.isAllFieldValid(),
                     onButtonClicked = {
                         viewModel.onEvent((RegistrationFormEvent.Submit))
