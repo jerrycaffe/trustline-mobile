@@ -1,5 +1,6 @@
 package com.example.trustline.utils
 
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object TimeFormatExt {
@@ -10,4 +11,10 @@ object TimeFormatExt {
         TimeUnit.MILLISECONDS.toMinutes(this) % 60,
         TimeUnit.MILLISECONDS.toSeconds(this) % 60
     )
+}
+
+fun String.toTitleCase(): String {
+    return this.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+    }
 }

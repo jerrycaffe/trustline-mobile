@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,7 +14,12 @@ import androidx.compose.ui.res.dimensionResource
 import com.example.trustline.R
 
 @Composable
-fun PrimaryButton(title: String, enabled: Boolean = true, onButtonClicked: () -> Unit) {
+fun PrimaryButton(
+    title: String,
+    enabled: Boolean = true,
+    loading: Boolean = false,
+    onButtonClicked: () -> Unit
+) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,6 +34,10 @@ fun PrimaryButton(title: String, enabled: Boolean = true, onButtonClicked: () ->
         shape = MaterialTheme.shapes.small,
         onClick = onButtonClicked
     ) {
-        Text(title)
+        if (loading) CircularProgressIndicator(
+            color = colorResource(id = R.color.deep_grey),
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
+        ) else Text(title)
     }
+
 }

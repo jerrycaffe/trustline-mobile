@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
 
 }
 
@@ -29,7 +29,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            val baseUrl = project.findProject("PROD_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
+        debug {
+            val baseUrl = project.findProject("BASE_URL_DEBUG")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        }
+
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -42,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
 }
@@ -58,9 +67,9 @@ dependencies {
     implementation("io.insert-koin:koin-core-viewmodel:4.0.3")
 
     // Koin Compose
-    runtimeOnly("io.insert-koin:koin-androidx-compose:4.0.3")    // Retrofit
+    runtimeOnly("io.insert-koin:koin-androidx-compose:4.0.3")
 
-
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")

@@ -42,7 +42,7 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+fun SignupScreen(navController: NavHostController) {
     val viewModel: SignupViewModel = viewModel(factory = SignupViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
@@ -131,6 +131,7 @@ fun SignupScreen(navController: NavHostController, modifier: Modifier = Modifier
                 PrimaryButton(
                     title = stringResource(id = R.string.sing_up),
                     enabled = viewModel.isAllFieldValid(),
+                    loading = state.isLoading,
                     onButtonClicked = {
                         viewModel.onEvent((RegistrationFormEvent.Submit))
                     })

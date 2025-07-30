@@ -6,6 +6,7 @@ data class RegistrationFormState(
     val password: String = "",
     val passwordError: String? = null,
     val phoneNumber: String = "",
+    val isLoading: Boolean = false,
     val apiError: String? = null,
     val phoneNumberError: String? = null,
     val isAllFieldValid: Boolean = false
