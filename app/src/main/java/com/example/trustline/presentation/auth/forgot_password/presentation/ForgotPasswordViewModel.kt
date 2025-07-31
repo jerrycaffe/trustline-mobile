@@ -5,32 +5,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trustline.utils.ValidatePhoneNumber
+import com.example.trustline.utils.ValidateEmail
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class ForgotPasswordViewModel(
-    private val validateEmail: ValidatePhoneNumber = ValidatePhoneNumber()
+    private val validateEmail: ValidateEmail = ValidateEmail()
 ) : ViewModel() {
     var state by mutableStateOf(ForgotPasswordFormState())
 
     private val validationEventChannel = Channel<ValidationEvent>()
-
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    fun isPhoneNumberFieldValid(): Boolean =
-        state.phoneNumber != "" && state.phoneNumberError == null
+    fun isEmailFieldValid(): Boolean =
+        state.email != "" && state.emailError == null
 
     fun onEvent(event: ForgotPasswordFormEvent) {
         when (event) {
             is ForgotPasswordFormEvent.PhoneNumberChanged -> {
-                val phoneNumberError = validateEmail.execute(event.phoneNumber).errorMessage
+                val emailError = validateEmail.execute(event.email).errorMessage
 
                 state =
                     state.copy(
-                        phoneNumber = event.phoneNumber,
-                        phoneNumberError = phoneNumberError
+                        email = event.email,
+                        emailError = emailError
                     )
             }
 
@@ -41,16 +40,16 @@ class ForgotPasswordViewModel(
     }
 
     private fun submitData() {
-        val phoneNumberResult = validateEmail.execute(state.phoneNumber)
+        val emailResult = validateEmail.execute(state.email)
 
-        state = if (!phoneNumberResult.successful) {
+        state = if (!emailResult.successful) {
             state.copy(
-                phoneNumberError = phoneNumberResult.errorMessage
+                emailError = emailResult.errorMessage
             )
 
         } else {
             state.copy(
-                phoneNumberError = null
+                emailError = null
             )
         }
         viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }

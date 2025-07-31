@@ -14,6 +14,7 @@ import com.example.trustline.presentation.welcome.WelcomeView
 import com.example.trustline.ui.theme.TrustlineTheme
 
 class MainActivity : ComponentActivity() {
+    private val globalViewModel = MainViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -21,8 +22,7 @@ class MainActivity : ComponentActivity() {
             TrustlineTheme {
                 Scaffold { innerPadding ->
                     val controller: NavHostController = rememberNavController()
-                    val viewModel = MainViewModel()
-                    AppNavigation(navController = controller, viewModel = viewModel)
+                    AppNavigation(navController = controller, globalViewModel)
                 }
             }
         }

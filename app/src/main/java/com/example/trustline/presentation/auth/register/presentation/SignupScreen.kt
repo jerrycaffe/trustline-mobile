@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.trustline.MainViewModel
 import com.example.trustline.R
 import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
@@ -42,7 +43,7 @@ import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun SignupScreen(navController: NavHostController) {
+fun SignupScreen(navController: NavHostController, globalViewModel: MainViewModel) {
     val viewModel: SignupViewModel = viewModel(factory = SignupViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
@@ -64,6 +65,8 @@ fun SignupScreen(navController: NavHostController) {
                 when (event) {
                     is ValidationEvent.Success -> {
                         Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                        globalViewModel.registeredUser = state.registeredUser
+                        navController.navigate(Routes.OTP_VALIDATION.name)
                     }
                 }
             }

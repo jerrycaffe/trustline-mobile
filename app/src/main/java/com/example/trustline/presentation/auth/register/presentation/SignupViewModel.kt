@@ -117,7 +117,9 @@ class SignupViewModel(
 
                 is ApiResult.Success -> {
                     validationEventChannel.send(ValidationEvent.Success)
-                    state = state.copy(apiError = null, isLoading = false)
+                    state =
+                        state.copy(apiError = null, isLoading = false, registeredUser = result.data)
+
                 }
             }
 

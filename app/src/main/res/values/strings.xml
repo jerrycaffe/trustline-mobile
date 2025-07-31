@@ -8,7 +8,7 @@
     <string name="reset_password">Reset Password</string>
     <string name="reset_password_description">Enter and confirm your new password</string>
     <string name="otp_description">Enter the 6-digit OTP sent to %s to verify your account</string>
-    <string name="forgot_password_description">Input your registered phone number so we can help you retrieve login details</string>
+    <string name="forgot_password_description">Input your registered email so we can help you retrieve login details</string>
     <string name="login_title">Welcome Back!</string>
     <string name="login_description">Enter your details to login</string>
     <string name="email">"Email"</string>

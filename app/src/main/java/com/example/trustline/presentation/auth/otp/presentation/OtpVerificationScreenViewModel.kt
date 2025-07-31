@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trustline.presentation.auth.forgot_password.presentation.ForgotPasswordFormEvent
 import com.example.trustline.presentation.auth.forgot_password.presentation.ForgotPasswordFormState
 import com.example.trustline.utils.TimeFormatExt.timeFormat
 import com.example.trustline.utils.ValidatePhoneNumber
@@ -64,40 +63,40 @@ class OtpVerificationScreenViewModel(
         timeLeft.value = initialTotalTime
     }
 
-    fun isPhoneNumberFieldValid(): Boolean =
-        state.phoneNumber != "" && state.phoneNumberError == null
+//    fun isPhoneNumberFieldValid(): Boolean =
+//        state.phoneNumber != "" && state.phoneNumberError == null
 
-    fun onEvent(event: ForgotPasswordFormEvent) {
-        when (event) {
-            is ForgotPasswordFormEvent.PhoneNumberChanged -> {
-                val phoneNumberError = validateEmail.execute(event.phoneNumber).errorMessage
-
-                state =
-                    state.copy(
-                        phoneNumber = event.phoneNumber,
-                        phoneNumberError = phoneNumberError
-                    )
-            }
-
-            ForgotPasswordFormEvent.Submit -> {
-                submitData()
-            }
-        }
-    }
+//    fun onEvent(event: ForgotPasswordFormEvent) {
+//        when (event) {
+//            is ForgotPasswordFormEvent.PhoneNumberChanged -> {
+//                val phoneNumberError = validateEmail.execute(event.phoneNumber).errorMessage
+//
+//                state =
+//                    state.copy(
+//                        phoneNumber = event.phoneNumber,
+//                        phoneNumberError = phoneNumberError
+//                    )
+//            }
+//
+//            ForgotPasswordFormEvent.Submit -> {
+//                submitData()
+//            }
+//        }
+//    }
 
     private fun submitData() {
-        val phoneNumberResult = validateEmail.execute(state.phoneNumber)
+//        val phoneNumberResult = validateEmail.execute(state.phoneNumber)
 
-        state = if (!phoneNumberResult.successful) {
-            state.copy(
-                phoneNumberError = phoneNumberResult.errorMessage
-            )
-
-        } else {
-            state.copy(
-                phoneNumberError = null
-            )
-        }
+//        state = if (!phoneNumberResult.successful) {
+//            state.copy(
+//                phoneNumberError = phoneNumberResult.errorMessage
+//            )
+//
+//        } else {
+//            state.copy(
+//                phoneNumberError = null
+//            )
+//        }
         viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }
     }
 

@@ -44,11 +44,11 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
 
     Box(
         modifier = modifier
-        .fillMaxSize()
-        .pointerInput(Unit) {
-            detectTapGestures { focusManager.clearFocus() }
-        }
-        .padding(dimensionResource(id = R.dimen.padding_medium))
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures { focusManager.clearFocus() }
+            }
+            .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
         //if validation is successful
@@ -94,18 +94,18 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_twenty)))
 
             InputTextBox(
-                value = state.phoneNumber,
-                isError = state.phoneNumberError != null,
-                placeHolder = stringResource(id = R.string.phone_number),
+                value = state.email,
+                isError = state.emailError != null,
+                placeHolder = stringResource(id = R.string.email),
                 keyboardType = KeyboardType.Phone,
                 onValueChanged = {
                     viewModel.onEvent(ForgotPasswordFormEvent.PhoneNumberChanged(it))
 
                 })
             //Display error
-            if (state.phoneNumberError != null) Row(modifier = Modifier.align(Alignment.Start)) {
+            if (state.emailError != null) Row(modifier = Modifier.align(Alignment.Start)) {
                 ErrorMessageComponent(
-                    state.phoneNumberError
+                    state.emailError
                 )
             }
 
@@ -113,7 +113,7 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
 
             PrimaryButton(
                 title = stringResource(id = R.string.submit),
-                enabled = viewModel.isPhoneNumberFieldValid(),
+                enabled = viewModel.isEmailFieldValid(),
                 onButtonClicked = {
                     viewModel.onEvent((ForgotPasswordFormEvent.Submit))
                 })

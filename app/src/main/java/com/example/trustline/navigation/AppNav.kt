@@ -13,14 +13,14 @@ import com.example.trustline.presentation.auth.reset_password.presentation.Reset
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController, viewModel: MainViewModel
+    navController: NavHostController, globalViewModel: MainViewModel
 ) {
     NavHost(
         navController = navController,
         startDestination = ScreenConfiguration.UnauthenticatedScreen.Register.route
     ) {
         composable(ScreenConfiguration.UnauthenticatedScreen.Register.route) {
-            SignupScreen(navController)
+            SignupScreen(navController, globalViewModel)
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.Login.route) {
             LoginScreen(navController)
@@ -37,7 +37,7 @@ fun AppNavigation(
             )
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route) {
-            OtpVerificationScreen(navController)
+            OtpVerificationScreen(navController, globalViewModel)
         }
 
     }

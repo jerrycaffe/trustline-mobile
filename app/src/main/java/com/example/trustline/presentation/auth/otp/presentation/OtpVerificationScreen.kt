@@ -44,23 +44,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.trustline.MainViewModel
 import com.example.trustline.R
 import com.example.trustline.presentation.common.PrimaryButton
 
 @Composable
-fun OtpVerificationScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+fun OtpVerificationScreen(navController: NavHostController, globalViewModel: MainViewModel) {
     val viewModel = viewModel<OtpVerificationScreenViewModel>()
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     var otpValue by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .pointerInput(Unit) {
-            detectTapGestures { focusManager.clearFocus() }
-        }
-        .padding(dimensionResource(id = R.dimen.padding_medium))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures { focusManager.clearFocus() }
+            }
+            .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
         //if validation is successful
@@ -100,7 +102,10 @@ fun OtpVerificationScreen(navController: NavHostController, modifier: Modifier =
                 modifier = Modifier
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.otp_description, "0808*****93")
+                text = stringResource(
+                    id = R.string.otp_description,
+                    "${globalViewModel.registeredUser?.email}"
+                )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
 
@@ -124,7 +129,8 @@ fun OtpVerificationScreen(navController: NavHostController, modifier: Modifier =
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
 
-            PrimaryButton(title = stringResource(id = R.string.submit),
+            PrimaryButton(
+                title = stringResource(id = R.string.submit),
                 enabled = otpValue.length == 6,
                 onButtonClicked = {
 //                    viewModel.onEvent((ForgotPasswordFormEvent.Submit))
