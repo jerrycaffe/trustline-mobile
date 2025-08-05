@@ -12,7 +12,7 @@ class AuthRepositoryImpl(
         return api.makePostCall(
             "/api/v1/auth/register",
             registerUserRequest,
-            RegisterUserRes::class.java
+            RegisterUserRes
         ) as ApiResult<RegisterUserRes>
     }
 }
