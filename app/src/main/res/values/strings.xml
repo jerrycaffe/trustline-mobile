@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">trustline</string>
+    <string name="signup_title">create an account</string>
+    <string name="forgot_password_image">forgot password image</string>
+    <string name="reset_password_image">reset password image</string>
+    <string name="otp_verification">OTP Verification</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_password_description">Enter and confirm your new password</string>
+    <string name="otp_description">Enter the 6-digit OTP sent to %s to verify your account</string>
+    <string name="forgot_password_description">Input your registered email so we can help you retrieve login details</string>
+    <string name="login_title">Welcome Back!</string>
+    <string name="login_description">Enter your details to login</string>
+    <string name="email">"Email"</string>
+    <string name="password">"Password"</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sing_up">Sign up</string>
+    <string name="submit">Submit</string>
+    <string name="login">Login</string>
+    <string name="app_logo">Trustline logo</string>
+    <string name="phone_number">Phone number</string>
+    <string name="hide_password">Hide Password</string>
+    <string name="show_password">Show Password</string>
+    <string name="continue_with_socials">or continue with</string>
+    <string name="signup_description">Enter your details to sign up to this app</string>
 </resources>
