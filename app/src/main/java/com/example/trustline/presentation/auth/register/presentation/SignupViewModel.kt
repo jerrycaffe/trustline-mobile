@@ -1,5 +1,6 @@
 package com.example.trustline.presentation.auth.register.presentation
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -116,6 +117,7 @@ class SignupViewModel(
                 }
 
                 is ApiResult.Success -> {
+                    Log.i("REGISTER_SUCCESS_RESPONSE", result.data.toString())
                     validationEventChannel.send(ValidationEvent.Success)
                     state =
                         state.copy(apiError = null, isLoading = false, registeredUser = result.data)

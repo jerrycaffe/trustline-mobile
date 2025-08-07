@@ -4,12 +4,13 @@ import android.util.Log
 import com.google.gson.Gson
 import retrofit2.HttpException
 import java.io.IOException
+import kotlin.reflect.KClass
 
 class ApiServiceImpl(val apiService: ApiService) {
-    suspend inline fun <reified R> makePostCall(
+    suspend inline fun <T : Any, reified R : Any> makePostCall(
         url: String,
-        requestBody: Any,
-        responseBody: Any
+        requestBody: T,
+        responseBody: KClass<R>
     ): ApiResult<R> {
 
         try {
