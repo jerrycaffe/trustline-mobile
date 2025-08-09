@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.trustline" />
-                  <option name="mobileSdkAppId" value="1:968911294762:android:ecb9deb018882728fe8e53" />
-                  <option name="projectId" value="trustline-b92df" />
-                  <option name="projectNumber" value="968911294762" />
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
