@@ -14,6 +14,7 @@ import com.example.trustline.TrustlineApplication
 import com.example.trustline.data.ApiResult
 import com.example.trustline.data.AuthRepository
 import com.example.trustline.data.RegisterUserRequest
+import com.example.trustline.data.RegisterUserRes
 import com.example.trustline.utils.ValidateEmail
 import com.example.trustline.utils.ValidatePassword
 import com.example.trustline.utils.ValidatePhoneNumber
@@ -118,7 +119,7 @@ class SignupViewModel(
 
                 is ApiResult.Success -> {
                     Log.i("REGISTER_SUCCESS_RESPONSE", result.data.toString())
-                    validationEventChannel.send(ValidationEvent.Success)
+                    validationEventChannel.send(ValidationEvent.Success(result.data))
                     state =
                         state.copy(apiError = null, isLoading = false, registeredUser = result.data)
 
@@ -141,7 +142,7 @@ class SignupViewModel(
 }
 
 sealed class ValidationEvent {
-    data object Success : ValidationEvent()
+    data class Success(val registerUserRes: RegisterUserRes) : ValidationEvent()
 }
 
 

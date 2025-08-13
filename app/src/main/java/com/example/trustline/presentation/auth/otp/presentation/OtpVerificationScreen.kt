@@ -1,5 +1,6 @@
 package com.example.trustline.presentation.auth.otp.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -66,16 +67,16 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 
     ) {
         //if validation is successful
-//        LaunchedEffect(key1 = context) {
-//            viewModel.validationEvents.collect { event ->
-//                when (event) {
-//                    is ForgotPasswordViewModel.ValidationEvent.Success -> {
-//                        Toast.makeText(context, "Forgot password successful", Toast.LENGTH_LONG)
-//                            .show()
-//                    }
-//                }
-//            }
-//        }
+        LaunchedEffect(key1 = context) {
+            viewModel.validationEvents.collect { event ->
+                when (event) {
+                    is OtpVerificationScreenViewModel.ValidationEvent.Success -> {
+                        Toast.makeText(context, "OTP verified", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+            }
+        }
 
 
         Column(
@@ -104,7 +105,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 textAlign = TextAlign.Center,
                 text = stringResource(
                     id = R.string.otp_description,
-                    "${globalViewModel.registeredUser?.email}"
+                    "${globalViewModel.otpValidationContent?.email}"
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
@@ -133,7 +134,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 title = stringResource(id = R.string.submit),
                 enabled = otpValue.length == 6,
                 onButtonClicked = {
-//                    viewModel.onEvent((ForgotPasswordFormEvent.Submit))
+                    viewModel.onEvent((OtpFormEvent.Submit(otpValue)))
                     viewModel.startCountDownTimer()
                 })
 

@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.trustline.data.RegisterUserRes
+import com.example.trustline.presentation.common.OtpValidationContent
 
 class MainViewModel : ViewModel() {
-    var registeredUser by mutableStateOf<RegisterUserRes?>(null)
+    var otpValidationContent by mutableStateOf<OtpValidationContent?>(null)
 }

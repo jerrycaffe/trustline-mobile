@@ -6,7 +6,10 @@ import okhttp3.ResponseBody
 import java.util.UUID
 
 data class RegisterUserRes(
-    val id: UUID, val email: String, val phoneNumber: String, val emailVerified: Boolean
+    val id: UUID,
+    val email: String,
+    val phoneNumber: String,
+    val emailVerified: Boolean
 )
 
 data class RegisterUserRequest(

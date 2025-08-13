@@ -37,6 +37,8 @@ import com.example.trustline.R
 import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
+import com.example.trustline.presentation.common.OtpType
+import com.example.trustline.presentation.common.OtpValidationContent
 import com.example.trustline.presentation.common.PrimaryButton
 import com.example.trustline.presentation.common.TermsAndConditionSection
 import com.example.trustline.presentation.common.TrustlineTitle
@@ -65,7 +67,12 @@ fun SignupScreen(navController: NavHostController, globalViewModel: MainViewMode
                 when (event) {
                     is ValidationEvent.Success -> {
                         Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
-                        globalViewModel.registeredUser = state.registeredUser
+                        globalViewModel.otpValidationContent =
+                            OtpValidationContent(
+                                event.registerUserRes.id,
+                                event.registerUserRes.email,
+                                OtpType.REGISTER
+                            )
                         navController.navigate(Routes.OTP_VALIDATION.name)
                     }
                 }

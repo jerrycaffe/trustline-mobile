@@ -62,41 +62,13 @@ class OtpVerificationScreenViewModel(
         timerText.value = initialTotalTime.timeFormat()
         timeLeft.value = initialTotalTime
     }
+    
 
-//    fun isPhoneNumberFieldValid(): Boolean =
-//        state.phoneNumber != "" && state.phoneNumberError == null
-
-//    fun onEvent(event: ForgotPasswordFormEvent) {
-//        when (event) {
-//            is ForgotPasswordFormEvent.PhoneNumberChanged -> {
-//                val phoneNumberError = validateEmail.execute(event.phoneNumber).errorMessage
-//
-//                state =
-//                    state.copy(
-//                        phoneNumber = event.phoneNumber,
-//                        phoneNumberError = phoneNumberError
-//                    )
-//            }
-//
-//            ForgotPasswordFormEvent.Submit -> {
-//                submitData()
-//            }
-//        }
-//    }
+    fun onEvent(event: OtpFormEvent) {
+        submitData()
+    }
 
     private fun submitData() {
-//        val phoneNumberResult = validateEmail.execute(state.phoneNumber)
-
-//        state = if (!phoneNumberResult.successful) {
-//            state.copy(
-//                phoneNumberError = phoneNumberResult.errorMessage
-//            )
-//
-//        } else {
-//            state.copy(
-//                phoneNumberError = null
-//            )
-//        }
         viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }
     }
 
