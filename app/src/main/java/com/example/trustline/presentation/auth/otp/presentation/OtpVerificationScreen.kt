@@ -51,7 +51,8 @@ import com.example.trustline.presentation.common.PrimaryButton
 
 @Composable
 fun OtpVerificationScreen(navController: NavHostController, globalViewModel: MainViewModel) {
-    val viewModel = viewModel<OtpVerificationScreenViewModel>()
+    val viewModel: OtpVerificationScreenViewModel =
+        viewModel(factory = OtpVerificationScreenViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -71,8 +72,11 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
             viewModel.validationEvents.collect { event ->
                 when (event) {
                     is OtpVerificationScreenViewModel.ValidationEvent.Success -> {
+
                         Toast.makeText(context, "OTP verified", Toast.LENGTH_LONG)
                             .show()
+                        //navigate based on the action
+                        navController.navigate(globalViewModel.otpValidationContent?.intendedScreen!!)
                     }
                 }
             }
@@ -111,9 +115,10 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
 
             OtpTextField(
-                otpText = otpValue,
+                otpText = state.otpValue,
+                otpCount = state.otpCount,
                 onOtpTextChange = { value, _ ->
-                    otpValue = value
+                    viewModel.onEvent(OtpFormEvent.OtpChanged(value))
                 }
             )
 
@@ -132,9 +137,14 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 
             PrimaryButton(
                 title = stringResource(id = R.string.submit),
-                enabled = otpValue.length == 6,
+                enabled = state.isAllFieldValid,
                 onButtonClicked = {
-                    viewModel.onEvent((OtpFormEvent.Submit(otpValue)))
+                    viewModel.onEvent(
+                        (OtpFormEvent.Submit(
+                            otpValue,
+                            globalViewModel.otpValidationContent?.userId!!
+                        ))
+                    )
                     viewModel.startCountDownTimer()
                 })
 
@@ -151,7 +161,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpCount: Int,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {

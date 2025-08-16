@@ -5,9 +5,5 @@ import java.util.UUID
 data class OtpValidationContent(
     var userId: UUID,
     val email: String,
-    val otpType: OtpType
+    val intendedScreen: String
 )
-
-enum class OtpType {
-    REGISTER, FORGOT_PASSWORD, RESET_PASSWORD
-}

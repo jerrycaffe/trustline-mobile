@@ -43,3 +43,7 @@ fun parseError(responseBody: ResponseBody?): ErrorResponse? {
         null
     }
 }
+
+data class OtpValidationRequest(
+    val verificationId: String, val userId: UUID
+)

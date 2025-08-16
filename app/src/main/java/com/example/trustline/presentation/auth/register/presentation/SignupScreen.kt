@@ -37,7 +37,6 @@ import com.example.trustline.R
 import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
-import com.example.trustline.presentation.common.OtpType
 import com.example.trustline.presentation.common.OtpValidationContent
 import com.example.trustline.presentation.common.PrimaryButton
 import com.example.trustline.presentation.common.TermsAndConditionSection
@@ -71,7 +70,7 @@ fun SignupScreen(navController: NavHostController, globalViewModel: MainViewMode
                             OtpValidationContent(
                                 event.registerUserRes.id,
                                 event.registerUserRes.email,
-                                OtpType.REGISTER
+                                Routes.LOGIN.name
                             )
                         navController.navigate(Routes.OTP_VALIDATION.name)
                     }
