@@ -87,12 +87,17 @@ class OtpVerificationScreenViewModel(
 
     fun submitData(otpValue: String, userId: UUID) {
         viewModelScope.launch {
+            state = state.copy(isLoading = true)
             val request = OtpValidationRequest(otpValue, userId)
             val result = authRepository.otpValidation(request)
             when (result) {
-                is ApiResult.Error -> state = state.copy(apiError = result.message)
+                is ApiResult.Error -> state =
+                    state.copy(apiError = result.message, isLoading = false)
 
-                is ApiResult.Success -> validationEventChannel.send(ValidationEvent.Success(true))
+                is ApiResult.Success -> {
+                    state = state.copy(isLoading = false)
+                    validationEventChannel.send(ValidationEvent.Success(true))
+                }
             }
         }
     }

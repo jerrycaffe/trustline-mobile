@@ -137,6 +137,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 
             PrimaryButton(
                 title = stringResource(id = R.string.submit),
+                loading = state.isLoading,
                 enabled = state.isAllFieldValid,
                 onButtonClicked = {
                     viewModel.onEvent(
@@ -209,14 +210,14 @@ private fun CharView(
     Text(
         modifier = Modifier
             .width(42.dp)
-            .height(42.dp)
+//            .height(42.dp)
             .border(
                 1.5.dp, when {
                     isFocused || text.isNotBlank() -> colorResource(id = R.color.primary)
                     else -> Color.LightGray
                 }, RoundedCornerShape(10.dp)
             )
-            .padding(2.dp),
+            .padding(10.dp),
         text = char,
         style = MaterialTheme.typography.titleLarge,
         color = if (isFocused || text.isNotBlank()) {
@@ -224,7 +225,7 @@ private fun CharView(
         } else {
             Color.LightGray
         },
-        fontSize = 24.sp,
+        fontSize = 22.sp,
         textAlign = TextAlign.Center
     )
 }
