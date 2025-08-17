@@ -47,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.MainViewModel
 import com.example.trustline.R
+import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.PrimaryButton
 
 @Composable
@@ -134,10 +135,11 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
-
+            if (state.apiError != null) ErrorMessageComponent(state.apiError)
             PrimaryButton(
                 title = stringResource(id = R.string.submit),
                 loading = state.isLoading,
+
                 enabled = state.isAllFieldValid,
                 onButtonClicked = {
                     viewModel.onEvent(
@@ -148,8 +150,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                     )
                     viewModel.startCountDownTimer()
                 })
-
-
+            
         }
 
 
@@ -210,7 +211,6 @@ private fun CharView(
     Text(
         modifier = Modifier
             .width(42.dp)
-//            .height(42.dp)
             .border(
                 1.5.dp, when {
                     isFocused || text.isNotBlank() -> colorResource(id = R.color.primary)
