@@ -10,6 +10,7 @@ import com.example.trustline.presentation.auth.login.presentation.LoginScreen
 import com.example.trustline.presentation.auth.otp.presentation.OtpVerificationScreen
 import com.example.trustline.presentation.auth.register.presentation.SignupScreen
 import com.example.trustline.presentation.auth.reset_password.presentation.ResetPasswordScreen
+import com.example.trustline.presentation.splash.SplashScreen
 
 @Composable
 fun AppNavigation(
@@ -17,8 +18,11 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route
+        startDestination = ScreenConfiguration.UnauthenticatedScreen.Splash.route
     ) {
+        composable(ScreenConfiguration.UnauthenticatedScreen.Splash.route) {
+            SplashScreen(navController)
+        }
         composable(ScreenConfiguration.UnauthenticatedScreen.Register.route) {
             SignupScreen(navController, globalViewModel)
         }

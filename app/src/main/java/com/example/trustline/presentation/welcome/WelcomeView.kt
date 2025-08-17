@@ -7,17 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.navigation.NavHostController
 import com.example.trustline.R
+import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.PrimaryButton
 import com.example.trustline.presentation.common.PrimaryOutlinedButton
 import com.example.trustline.presentation.common.TrustLineLogoImg
 import com.example.trustline.presentation.common.TrustlineTitle
+import kotlinx.coroutines.delay
 
 @Composable
-fun WelcomeView(modifier: Modifier = Modifier) {
+fun WelcomeView( modifier: Modifier = Modifier) {
     Column(
         Modifier
             .padding(dimensionResource(id = R.dimen.padding_medium))
@@ -39,4 +43,5 @@ fun WelcomeView(modifier: Modifier = Modifier) {
         }
 
     }
+
 }
