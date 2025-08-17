@@ -1,5 +1,6 @@
 package com.example.trustline.presentation.auth.otp.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,11 +47,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.MainViewModel
 import com.example.trustline.R
+import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.PrimaryButton
 
 @Composable
 fun OtpVerificationScreen(navController: NavHostController, globalViewModel: MainViewModel) {
-    val viewModel = viewModel<OtpVerificationScreenViewModel>()
+    val viewModel: OtpVerificationScreenViewModel =
+        viewModel(factory = OtpVerificationScreenViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -66,16 +69,19 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 
     ) {
         //if validation is successful
-//        LaunchedEffect(key1 = context) {
-//            viewModel.validationEvents.collect { event ->
-//                when (event) {
-//                    is ForgotPasswordViewModel.ValidationEvent.Success -> {
-//                        Toast.makeText(context, "Forgot password successful", Toast.LENGTH_LONG)
-//                            .show()
-//                    }
-//                }
-//            }
-//        }
+        LaunchedEffect(key1 = context) {
+            viewModel.validationEvents.collect { event ->
+                when (event) {
+                    is OtpVerificationScreenViewModel.ValidationEvent.Success -> {
+
+                        Toast.makeText(context, "OTP verified", Toast.LENGTH_LONG)
+                            .show()
+                        //navigate based on the action
+                        navController.navigate(globalViewModel.otpValidationContent?.intendedScreen!!)
+                    }
+                }
+            }
+        }
 
 
         Column(
@@ -104,15 +110,16 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 textAlign = TextAlign.Center,
                 text = stringResource(
                     id = R.string.otp_description,
-                    "${globalViewModel.registeredUser?.email}"
+                    "${globalViewModel.otpValidationContent?.email}"
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
 
             OtpTextField(
-                otpText = otpValue,
+                otpText = state.otpValue,
+                otpCount = state.otpCount,
                 onOtpTextChange = { value, _ ->
-                    otpValue = value
+                    viewModel.onEvent(OtpFormEvent.OtpChanged(value))
                 }
             )
 
@@ -128,16 +135,22 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
-
+            if (state.apiError != null) ErrorMessageComponent(state.apiError)
             PrimaryButton(
                 title = stringResource(id = R.string.submit),
-                enabled = otpValue.length == 6,
+                loading = state.isLoading,
+
+                enabled = state.isAllFieldValid,
                 onButtonClicked = {
-//                    viewModel.onEvent((ForgotPasswordFormEvent.Submit))
+                    viewModel.onEvent(
+                        (OtpFormEvent.Submit(
+                            otpValue,
+                            globalViewModel.otpValidationContent?.userId!!
+                        ))
+                    )
                     viewModel.startCountDownTimer()
                 })
-
-
+            
         }
 
 
@@ -150,7 +163,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpCount: Int,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -198,14 +211,13 @@ private fun CharView(
     Text(
         modifier = Modifier
             .width(42.dp)
-            .height(42.dp)
             .border(
                 1.5.dp, when {
                     isFocused || text.isNotBlank() -> colorResource(id = R.color.primary)
                     else -> Color.LightGray
                 }, RoundedCornerShape(10.dp)
             )
-            .padding(2.dp),
+            .padding(10.dp),
         text = char,
         style = MaterialTheme.typography.titleLarge,
         color = if (isFocused || text.isNotBlank()) {
@@ -213,7 +225,7 @@ private fun CharView(
         } else {
             Color.LightGray
         },
-        fontSize = 24.sp,
+        fontSize = 22.sp,
         textAlign = TextAlign.Center
     )
 }

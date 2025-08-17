@@ -6,7 +6,10 @@ import okhttp3.ResponseBody
 import java.util.UUID
 
 data class RegisterUserRes(
-    val id: UUID, val email: String, val phoneNumber: String, val emailVerified: Boolean
+    val id: UUID,
+    val email: String,
+    val phoneNumber: String,
+    val emailVerified: Boolean
 )
 
 data class RegisterUserRequest(
@@ -40,3 +43,9 @@ fun parseError(responseBody: ResponseBody?): ErrorResponse? {
         null
     }
 }
+
+data class OtpValidationRequest(
+    val verificationId: String, val userId: UUID
+)
+
+data class OtpValidationResponse(val message: String)

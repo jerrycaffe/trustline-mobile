@@ -6,17 +6,24 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.example.trustline.presentation.auth.forgot_password.presentation.ForgotPasswordFormState
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.trustline.TrustlineApplication
+import com.example.trustline.data.ApiResult
+import com.example.trustline.data.AuthRepository
+import com.example.trustline.data.OtpValidationRequest
 import com.example.trustline.utils.TimeFormatExt.timeFormat
-import com.example.trustline.utils.ValidatePhoneNumber
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class OtpVerificationScreenViewModel(
-    private val validateEmail: ValidatePhoneNumber = ValidatePhoneNumber()
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private var countDownTimer: CountDownTimer? = null
     private val minutes = TimeUnit.MINUTES.toMillis(3)
@@ -30,11 +37,19 @@ class OtpVerificationScreenViewModel(
 
     val isPlaying = mutableStateOf(false)
 
-    var state by mutableStateOf(ForgotPasswordFormState())
+    var state by mutableStateOf(OtpFormState())
 
     private val validationEventChannel = Channel<ValidationEvent>()
 
     val validationEvents = validationEventChannel.receiveAsFlow()
+
+    fun handleOtpChange(otpValue: String) {
+        state = state.copy(
+            otpValue = otpValue,
+            isAllFieldValid = otpValue.length == state.otpCount
+        )
+
+    }
 
     fun startCountDownTimer() = viewModelScope.launch {
         isPlaying.value = true
@@ -63,46 +78,48 @@ class OtpVerificationScreenViewModel(
         timeLeft.value = initialTotalTime
     }
 
-//    fun isPhoneNumberFieldValid(): Boolean =
-//        state.phoneNumber != "" && state.phoneNumberError == null
+    fun onEvent(event: OtpFormEvent) {
+        when (event) {
+            is OtpFormEvent.OtpChanged -> handleOtpChange(event.otpValue)
+            is OtpFormEvent.Submit -> submitData(state.otpValue, event.userId)
+        }
+    }
 
-//    fun onEvent(event: ForgotPasswordFormEvent) {
-//        when (event) {
-//            is ForgotPasswordFormEvent.PhoneNumberChanged -> {
-//                val phoneNumberError = validateEmail.execute(event.phoneNumber).errorMessage
-//
-//                state =
-//                    state.copy(
-//                        phoneNumber = event.phoneNumber,
-//                        phoneNumberError = phoneNumberError
-//                    )
-//            }
-//
-//            ForgotPasswordFormEvent.Submit -> {
-//                submitData()
-//            }
-//        }
-//    }
+    fun submitData(otpValue: String, userId: UUID) {
+        viewModelScope.launch {
+            state = state.copy(isLoading = true, apiError = null)
+            val request = OtpValidationRequest(otpValue, userId)
+            val result = authRepository.otpValidation(request)
+            when (result) {
+                is ApiResult.Error -> state =
+                    state.copy(apiError = result.message, isLoading = false)
 
-    private fun submitData() {
-//        val phoneNumberResult = validateEmail.execute(state.phoneNumber)
+                is ApiResult.Success -> {
+                    state = state.copy(isLoading = false)
+                    resetCountDownTimer()
+                    validationEventChannel.send(ValidationEvent.Success(true))
+                }
+            }
+        }
+    }
 
-//        state = if (!phoneNumberResult.successful) {
-//            state.copy(
-//                phoneNumberError = phoneNumberResult.errorMessage
-//            )
-//
-//        } else {
-//            state.copy(
-//                phoneNumberError = null
-//            )
-//        }
-        viewModelScope.launch { validationEventChannel.send(ValidationEvent.Success) }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as TrustlineApplication)
+                val authRepository = application.container.authRepository
+                OtpVerificationScreenViewModel(authRepository = authRepository)
+            }
+        }
     }
 
     sealed class ValidationEvent {
-        data object Success : ValidationEvent()
+        data class Success(val isSuccess: Boolean) : ValidationEvent()
     }
-
 }
+
+
+
+
+
 
