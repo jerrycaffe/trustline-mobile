@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class OtpFormState(
     val otpValue: String = "",
+    val timerValue: String = "",
     var userId: UUID? = null,
     val otpError: String? = null,
     val isAllFieldValid: Boolean = false,

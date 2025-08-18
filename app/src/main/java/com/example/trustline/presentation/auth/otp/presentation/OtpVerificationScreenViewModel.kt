@@ -81,6 +81,7 @@ class OtpVerificationScreenViewModel(
     fun onEvent(event: OtpFormEvent) {
         when (event) {
             is OtpFormEvent.OtpChanged -> handleOtpChange(event.otpValue)
+            is OtpFormEvent.ResendOtp -> handleResendOtp()
             is OtpFormEvent.Submit -> submitData(state.otpValue, event.userId)
         }
     }
