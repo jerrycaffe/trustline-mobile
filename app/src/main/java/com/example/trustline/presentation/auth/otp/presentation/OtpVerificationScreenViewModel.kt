@@ -78,6 +78,14 @@ class OtpVerificationScreenViewModel(
         timeLeft.value = initialTotalTime
     }
 
+    private fun handleResendOtp() {
+//        TODO: resend token, should restart counter
+//        Should call resend otp endpoint passing previous token id
+        resetCountDownTimer()
+
+    }
+
+
     fun onEvent(event: OtpFormEvent) {
         when (event) {
             is OtpFormEvent.OtpChanged -> handleOtpChange(event.otpValue)

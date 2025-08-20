@@ -10,5 +10,6 @@ data class OtpFormState(
     val isAllFieldValid: Boolean = false,
     val otpCount: Int = 6,
     val apiError: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val prevTokenId: UUID? = null
 )

@@ -131,7 +131,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 Text(
                     text = "Resend",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.clickable { viewModel.resetCountDownTimer() })
+                    modifier = Modifier.clickable { viewModel.onEvent(OtpFormEvent.ResendOtp) })
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
@@ -150,7 +150,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                     )
                     viewModel.startCountDownTimer()
                 })
-            
+
         }
 
 
