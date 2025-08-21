@@ -70,6 +70,7 @@ fun SignupScreen(navController: NavHostController, globalViewModel: MainViewMode
                             OtpValidationContent(
                                 event.registerUserRes.id,
                                 event.registerUserRes.email,
+                                event.registerUserRes.otpId,
                                 Routes.LOGIN.name
                             )
                         navController.navigate(Routes.OTP_VALIDATION.name)

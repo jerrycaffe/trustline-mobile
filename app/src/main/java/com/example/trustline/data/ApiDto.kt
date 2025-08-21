@@ -8,6 +8,7 @@ import java.util.UUID
 data class RegisterUserRes(
     val id: UUID,
     val email: String,
+    val otpId: UUID,
     val phoneNumber: String,
     val emailVerified: Boolean
 )
