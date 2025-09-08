@@ -18,7 +18,7 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenConfiguration.UnauthenticatedScreen.Splash.route
+        startDestination = ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route
     ) {
         composable(ScreenConfiguration.UnauthenticatedScreen.Splash.route) {
             SplashScreen(navController)
