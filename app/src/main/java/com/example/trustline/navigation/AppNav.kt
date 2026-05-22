@@ -18,7 +18,7 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenConfiguration.UnauthenticatedScreen.OtpValidation.route
+        startDestination = ScreenConfiguration.UnauthenticatedScreen.Splash.route
     ) {
         composable(ScreenConfiguration.UnauthenticatedScreen.Splash.route) {
             SplashScreen(navController)
@@ -27,12 +27,12 @@ fun AppNavigation(
             SignupScreen(navController, globalViewModel)
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.Login.route) {
-            LoginScreen(navController)
+            LoginScreen(navController, globalViewModel)
         }
 
         composable(ScreenConfiguration.UnauthenticatedScreen.ForgotPassword.route) {
             ForgotPasswordScreen(
-                navController
+                navController, globalViewModel
             )
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.ResetPassword.route) {

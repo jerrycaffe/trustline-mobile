@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,7 +56,6 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    var otpValue by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -77,7 +75,9 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                         Toast.makeText(context, "OTP verified", Toast.LENGTH_LONG)
                             .show()
                         //navigate based on the action
-                        navController.navigate(globalViewModel.otpValidationContent?.intendedScreen!!)
+                        globalViewModel.otpValidationContent?.intendedScreen?.let {
+                            navController.navigate(it)
+                        }
                     }
                 }
             }
@@ -110,7 +110,7 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 textAlign = TextAlign.Center,
                 text = stringResource(
                     id = R.string.otp_description,
-                    "${globalViewModel.otpValidationContent?.email}"
+                    globalViewModel.otpValidationContent?.email ?: ""
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
@@ -118,13 +118,16 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
             OtpTextField(
                 otpText = state.otpValue,
                 otpCount = state.otpCount,
-                onOtpTextChange = { value, _ ->
+                onOtpTextChange = { value, isComplete ->
                     viewModel.onEvent(OtpFormEvent.OtpChanged(value))
+                    if (isComplete) {
+                        focusManager.clearFocus()
+                    }
                 }
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
-            Text(text = "${viewModel.timerText.value} sec")
+            Text(text = viewModel.timerText.value)
             Spacer(modifier = Modifier.height(20.dp))
             Row {
                 Text(text = "Didn’t receive code? ")
@@ -140,15 +143,16 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 title = stringResource(id = R.string.submit),
                 loading = state.isLoading,
 
-                enabled = state.isAllFieldValid,
+                enabled = state.isAllFieldValid && globalViewModel.otpValidationContent?.userId != null,
                 onButtonClicked = {
-                    viewModel.onEvent(
-                        (OtpFormEvent.Submit(
-                            otpValue,
-                            globalViewModel.otpValidationContent?.userId!!
-                        ))
-                    )
-                    viewModel.startCountDownTimer()
+                    globalViewModel.otpValidationContent?.userId?.let { userId ->
+                        viewModel.onEvent(
+                            OtpFormEvent.Submit(
+                                state.otpValue,
+                                userId
+                            )
+                        )
+                    }
                 })
 
         }

@@ -29,15 +29,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.trustline.MainViewModel
 import com.example.trustline.R
+import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
+import com.example.trustline.presentation.common.OtpValidationContent
 import com.example.trustline.presentation.common.PrimaryButton
 
 
 @Composable
-fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-    val viewModel = viewModel<ForgotPasswordViewModel>()
+fun ForgotPasswordScreen(
+    navController: NavHostController,
+    globalViewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    val viewModel: ForgotPasswordViewModel = viewModel(factory = ForgotPasswordViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -56,8 +63,16 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
             viewModel.validationEvents.collect { event ->
                 when (event) {
                     is ForgotPasswordViewModel.ValidationEvent.Success -> {
-                        Toast.makeText(context, "Forgot password successful", Toast.LENGTH_LONG)
+                        Toast.makeText(context, "OTP sent successfully", Toast.LENGTH_LONG)
                             .show()
+
+                        globalViewModel.otpValidationContent = OtpValidationContent(
+                            userId = event.response.userId,
+                            email = state.email,
+                            otpId = event.response.otpId,
+                            intendedScreen = Routes.RESET_PASSWORD.name
+                        )
+                        navController.navigate(Routes.OTP_VALIDATION.name)
                     }
                 }
             }
@@ -97,7 +112,7 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
                 value = state.email,
                 isError = state.emailError != null,
                 placeHolder = stringResource(id = R.string.email),
-                keyboardType = KeyboardType.Phone,
+                keyboardType = KeyboardType.Text,
                 onValueChanged = {
                     viewModel.onEvent(ForgotPasswordFormEvent.PhoneNumberChanged(it))
 
@@ -109,10 +124,17 @@ fun ForgotPasswordScreen(navController: NavHostController, modifier: Modifier = 
                 )
             }
 
+            if (state.apiError != null) Row(modifier = Modifier.align(Alignment.Start)) {
+                ErrorMessageComponent(
+                    state.apiError
+                )
+            }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_forty)))
 
             PrimaryButton(
                 title = stringResource(id = R.string.submit),
+                loading = state.isLoading,
                 enabled = viewModel.isEmailFieldValid(),
                 onButtonClicked = {
                     viewModel.onEvent((ForgotPasswordFormEvent.Submit))

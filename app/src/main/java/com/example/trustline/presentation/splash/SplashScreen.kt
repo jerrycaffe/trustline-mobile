@@ -10,7 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.example.trustline.navigation.Routes
+import com.example.trustline.navigation.ScreenConfiguration
 import com.example.trustline.presentation.common.TrustLineLogoImg
 import com.example.trustline.presentation.common.TrustlineTitle
 import kotlinx.coroutines.delay
@@ -31,8 +31,10 @@ fun SplashScreen(navController: NavHostController, modifier: Modifier = Modifier
     LaunchedEffect(Unit) {
         delay(3000)
 //        TODO: Check if user is logged in
-        navController.navigate(Routes.LOGIN.name) {
-            popUpTo(Routes.SPLASH.name) { inclusive = true }
+        navController.navigate(ScreenConfiguration.UnauthenticatedScreen.Register.route) {
+            popUpTo(ScreenConfiguration.UnauthenticatedScreen.Splash.route) {
+                inclusive = true
+            }
         }
     }
 }

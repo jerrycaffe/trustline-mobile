@@ -1,5 +1,6 @@
 package com.example.trustline.data
 
+import com.example.trustline.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -8,7 +9,7 @@ interface AppContainer {
 }
 
 class DefaultAppContainer : AppContainer {
-    private val baseUrl = "http://10.0.2.2:8181/"
+    private val baseUrl = BuildConfig.BASE_URL
 
     //This is retrofit settings/configuration
     private val retrofit: Retrofit = Retrofit.Builder()

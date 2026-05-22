@@ -68,7 +68,7 @@ fun SignupScreen(navController: NavHostController, globalViewModel: MainViewMode
                         Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
                         globalViewModel.otpValidationContent =
                             OtpValidationContent(
-                                event.registerUserRes.id,
+                                event.registerUserRes.userId,
                                 event.registerUserRes.email,
                                 event.registerUserRes.otpId,
                                 Routes.LOGIN.name
