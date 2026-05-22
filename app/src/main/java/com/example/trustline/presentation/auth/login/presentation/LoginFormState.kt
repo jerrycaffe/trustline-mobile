@@ -4,7 +4,9 @@ data class LoginFormState(
     val email: String = "",
     val emailError: String? = null,
     val password: String = "",
-    val passwordError: String? = null
+    val passwordError: String? = null,
+    val isLoading: Boolean = false,
+    val apiError: String? = null
 )
 
 val LoginFormState.isAllFieldValid: Boolean get() = email != "" && password != "" && emailError == null && passwordError == null

@@ -27,12 +27,12 @@ fun AppNavigation(
             SignupScreen(navController, globalViewModel)
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.Login.route) {
-            LoginScreen(navController)
+            LoginScreen(navController, globalViewModel)
         }
 
         composable(ScreenConfiguration.UnauthenticatedScreen.ForgotPassword.route) {
             ForgotPasswordScreen(
-                navController
+                navController, globalViewModel
             )
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.ResetPassword.route) {

@@ -32,28 +32,35 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.trustline.MainViewModel
 import com.example.trustline.R
 import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
+import com.example.trustline.presentation.common.OtpValidationContent
 import com.example.trustline.presentation.common.PrimaryButton
 import com.example.trustline.presentation.common.TermsAndConditionSection
 import com.example.trustline.presentation.common.TrustlineTitle
 
 
 @Composable
-fun LoginScreen(navCOntroller: NavHostController, modifier: Modifier = Modifier) {
-    val viewModel = viewModel<LoginViewModel>()
+fun LoginScreen(
+    navCOntroller: NavHostController,
+    globalViewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .pointerInput(Unit) {
-            detectTapGestures { focusManager.clearFocus() }
-        }
-        .padding(dimensionResource(id = R.dimen.padding_medium))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures { focusManager.clearFocus() }
+            }
+            .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
         //if validation is successful
@@ -62,6 +69,19 @@ fun LoginScreen(navCOntroller: NavHostController, modifier: Modifier = Modifier)
                 when (event) {
                     is LoginViewModel.ValidationEvent.Success -> {
                         Toast.makeText(context, "Login successful", Toast.LENGTH_LONG).show()
+
+                        val response = event.loginResponse
+                        if (response.userDetails.status == "OTP_VALIDATION") {
+                            globalViewModel.otpValidationContent = OtpValidationContent(
+                                userId = response.userId,
+                                email = response.userDetails.email,
+                                otpId = response.otpId,
+                                intendedScreen = Routes.LOGIN.name // Or wherever next
+                            )
+                            navCOntroller.navigate(Routes.OTP_VALIDATION.name)
+                        } else {
+                            // Navigate to dashboard
+                        }
                     }
                 }
             }
@@ -95,7 +115,8 @@ fun LoginScreen(navCOntroller: NavHostController, modifier: Modifier = Modifier)
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_ten)),
             ) {
-                InputTextBox(value = state.email,
+                InputTextBox(
+                    value = state.email,
                     isError = state.emailError != null,
                     placeHolder = stringResource(id = R.string.email),
                     keyboardType = KeyboardType.Email,
@@ -115,7 +136,12 @@ fun LoginScreen(navCOntroller: NavHostController, modifier: Modifier = Modifier)
                     isPasswordField = true
                 )
                 if (state.passwordError != null) ErrorMessageComponent(state.passwordError)
-                PrimaryButton(title = stringResource(id = R.string.login),
+
+                if (state.apiError != null) ErrorMessageComponent(state.apiError)
+
+                PrimaryButton(
+                    title = stringResource(id = R.string.login),
+                    loading = state.isLoading,
                     enabled = viewModel.isAllFieldMatch(),
                     onButtonClicked = {
                         viewModel.onEvent((LoginFormEvent.Submit))

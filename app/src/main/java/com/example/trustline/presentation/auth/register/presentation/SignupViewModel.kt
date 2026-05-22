@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.trustline.BuildConfig
 import com.example.trustline.TrustlineApplication
 import com.example.trustline.data.ApiResult
 import com.example.trustline.data.AuthRepository
@@ -22,6 +23,7 @@ import com.example.trustline.utils.toTitleCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 
 class SignupViewModel(
@@ -31,6 +33,7 @@ class SignupViewModel(
     private val authRepository: AuthRepository
 
 ) : ViewModel() {
+    private val institutionId = BuildConfig.INSTITUTION_ID
     var state by mutableStateOf(RegistrationFormState())
     private val validationEventChannel = Channel<ValidationEvent>()
 
@@ -108,7 +111,10 @@ class SignupViewModel(
             state = state.copy(apiError = null, isLoading = true)
 
             val request = RegisterUserRequest(
-                email = state.email, password = state.password, phoneNumber = state.phoneNumber
+                email = state.email,
+                password = state.password,
+                phoneNumber = state.phoneNumber,
+                institutionId = UUID.fromString(institutionId)
             )
 
             val result = authRepository.registerUser(request)
@@ -119,10 +125,12 @@ class SignupViewModel(
 
                 is ApiResult.Success -> {
                     Log.i("REGISTER_SUCCESS_RESPONSE", result.data.toString())
-                    validationEventChannel.send(ValidationEvent.Success(result.data))
-                    state =
-                        state.copy(apiError = null, isLoading = false, registeredUser = result.data)
-
+                    result.data?.let { data ->
+                        validationEventChannel.send(ValidationEvent.Success(data))
+                        state = state.copy(apiError = null, isLoading = false, registeredUser = data)
+                    } ?: run {
+                        state = state.copy(apiError = "Registration successful but no data returned", isLoading = false)
+                    }
                 }
             }
 

@@ -43,6 +43,10 @@ class OtpVerificationScreenViewModel(
 
     val validationEvents = validationEventChannel.receiveAsFlow()
 
+    init {
+        startCountDownTimer()
+    }
+
     fun handleOtpChange(otpValue: String) {
         state = state.copy(
             otpValue = otpValue,
@@ -51,7 +55,8 @@ class OtpVerificationScreenViewModel(
 
     }
 
-    fun startCountDownTimer() = viewModelScope.launch {
+    fun startCountDownTimer() {
+        countDownTimer?.cancel()
         isPlaying.value = true
         countDownTimer = object : CountDownTimer(timeLeft.value, countDownInterval) {
             override fun onTick(currentTimeLeft: Long) {
@@ -60,7 +65,7 @@ class OtpVerificationScreenViewModel(
             }
 
             override fun onFinish() {
-                timerText.value = initialTotalTime.timeFormat()
+                timerText.value = "00:00"
                 isPlaying.value = false
             }
         }.start()
@@ -78,9 +83,18 @@ class OtpVerificationScreenViewModel(
         timeLeft.value = initialTotalTime
     }
 
+    private fun handleResendOtp() {
+//        TODO: resend token, should restart counter
+//        Should call resend otp endpoint passing previous token id
+        resetCountDownTimer()
+        startCountDownTimer()
+    }
+
+
     fun onEvent(event: OtpFormEvent) {
         when (event) {
             is OtpFormEvent.OtpChanged -> handleOtpChange(event.otpValue)
+            is OtpFormEvent.ResendOtp -> handleResendOtp()
             is OtpFormEvent.Submit -> submitData(state.otpValue, event.userId)
         }
     }

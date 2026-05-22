@@ -1,21 +1,21 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
-
+    alias(libs.plugins.kotlin.serialization)
 }
 
-android {
+extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
     namespace = "com.example.trustline"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.trustline"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -29,68 +29,64 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            val baseUrl = project.findProject("PROD_BASE_URL")
+            val baseUrl = project.findProperty("PROD_BASE_URL") ?: ""
+            val institutionId = project.findProperty("PROD_INSTITUTION_ID") ?: ""
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "INSTITUTION_ID", "\"$institutionId\"")
         }
         debug {
-            val baseUrl = project.findProject("BASE_URL_DEBUG")
+            val baseUrl = project.findProperty("DEV_BASE_URL") ?: ""
+            val institutionId = project.findProperty("DEV_INSTITUTION_ID") ?: ""
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "INSTITUTION_ID", "\"$institutionId\"")
         }
-
-
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
-        }
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
-
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
 
 dependencies {
-    //splash screen
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    // Splash screen
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation("io.insert-koin:koin-core:4.0.3")
+    // Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.core.viewmodel)
+    runtimeOnly(libs.koin.androidx.compose)
 
-    // Koin Android
-    implementation("io.insert-koin:koin-android:4.0.3")
-
-    // Koin ViewModel
-    implementation("io.insert-koin:koin-core-viewmodel:4.0.3")
-
-    // Koin Compose
-    runtimeOnly("io.insert-koin:koin-androidx-compose:4.0.3")
-
-    // Retrofit
+    // Retrofit & Serialization
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
+    implementation(libs.gson)
 
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    // Security & DataStore
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.datastore.preferences)
 
-
-
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
-    implementation("com.google.code.gson:gson:2.11.0")
+    // Image loading
+    implementation(libs.coil.compose)
 
     // OkHttp logging (for debugging)
     implementation(libs.logging.interceptor)
 
-
+    // Compose & UI
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -103,6 +99,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.text.google.fonts)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
