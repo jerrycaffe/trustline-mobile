@@ -31,7 +31,7 @@ fun SplashScreen(navController: NavHostController, modifier: Modifier = Modifier
     LaunchedEffect(Unit) {
         delay(3000)
 //        TODO: Check if user is logged in
-        navController.navigate(ScreenConfiguration.UnauthenticatedScreen.Register.route) {
+        navController.navigate(ScreenConfiguration.UnauthenticatedScreen.Home.route) {
             popUpTo(ScreenConfiguration.UnauthenticatedScreen.Splash.route) {
                 inclusive = true
             }

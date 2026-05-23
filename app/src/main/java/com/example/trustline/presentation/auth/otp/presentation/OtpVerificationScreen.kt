@@ -79,6 +79,15 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                             navController.navigate(it)
                         }
                     }
+
+                    is OtpVerificationScreenViewModel.ValidationEvent.OtpResendSuccess -> {
+                        Toast.makeText(context, "OTP Resent", Toast.LENGTH_LONG).show()
+                        globalViewModel.otpValidationContent =
+                            globalViewModel.otpValidationContent?.copy(
+                                otpId = event.response.otpId,
+                                userId = event.response.userId
+                            )
+                    }
                 }
             }
         }
@@ -134,7 +143,11 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 Text(
                     text = "Resend",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.clickable { viewModel.onEvent(OtpFormEvent.ResendOtp) })
+                    modifier = Modifier.clickable {
+                        globalViewModel.otpValidationContent?.email?.let {
+                            viewModel.onEvent(OtpFormEvent.ResendOtp(it))
+                        }
+                    })
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))

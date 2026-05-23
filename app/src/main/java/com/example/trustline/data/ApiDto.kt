@@ -92,3 +92,24 @@ data class ForgotPasswordResponse(
     val otpId: UUID,
     val userId: UUID
 )
+
+data class ResetPasswordRequest(
+    val newPassword: String,
+    val userId: UUID,
+    val institutionId: UUID,
+    val otpId: UUID
+)
+
+data class ResetPasswordResponse(
+    val message: String
+)
+
+data class ResendOtpRequest(
+    val email: String,
+    val institutionId: UUID
+)
+
+data class ResendOtpResponse(
+    val otpId: UUID,
+    val userId: UUID
+)

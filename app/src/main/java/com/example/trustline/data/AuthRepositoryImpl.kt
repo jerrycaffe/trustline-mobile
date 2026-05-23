@@ -9,6 +9,10 @@ interface AuthRepository {
     suspend fun loginUser(loginRequest: LoginRequest): ApiResult<LoginResponse>
 
     suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): ApiResult<ForgotPasswordResponse>
+
+    suspend fun resendOtp(resendOtpRequest: ResendOtpRequest): ApiResult<ResendOtpResponse>
+
+    suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): ApiResult<ResetPasswordResponse>
 }
 
 class AuthRepositoryImpl(
@@ -43,6 +47,22 @@ class AuthRepositoryImpl(
             "auth/forgot-password",
             forgotPasswordRequest,
             ForgotPasswordResponse::class
+        )
+    }
+
+    override suspend fun resendOtp(resendOtpRequest: ResendOtpRequest): ApiResult<ResendOtpResponse> {
+        return api.makePostCall(
+            "auth/resend-otp",
+            resendOtpRequest,
+            ResendOtpResponse::class
+        )
+    }
+
+    override suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): ApiResult<ResetPasswordResponse> {
+        return api.makePostCall(
+            "auth/reset-password",
+            resetPasswordRequest,
+            ResetPasswordResponse::class
         )
     }
 }

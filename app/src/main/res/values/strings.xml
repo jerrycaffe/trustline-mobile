@@ -23,4 +23,12 @@
     <string name="show_password">Show Password</string>
     <string name="continue_with_socials">or continue with</string>
     <string name="signup_description">Enter your details to sign up to this app</string>
+    <string name="report_a_case">Report a Case</string>
+    <string name="report_case_description">To report a case, you’d need to provide vital and legitimate information. You are also able to upload any media as evidence to support your report. After the report has been received, you would be contacted to proceed with the next steps.</string>
+    <string name="continue_text">Continue</string>
+    <string name="report_case_icon">Report Icon</string>
+    <string name="track_a_case">Track a Case</string>
+    <string name="track_case_description">After reporting a case, you can track the status and progress of the case as it gets closer to resolution. This helps keep you updated on the case.</string>
+    <string name="seek_help">Seek Help</string>
+    <string name="seek_help_description">If you are a victim of GBV and are suffering from trauma. you can make use of some our wellness exercises as a first treatment. Although, it is recommended to see a wellness professional.</string>
 </resources>

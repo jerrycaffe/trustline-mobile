@@ -14,6 +14,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavHostController
 import com.example.trustline.R
 import com.example.trustline.navigation.Routes
+import com.example.trustline.navigation.ScreenConfiguration
 import com.example.trustline.presentation.common.PrimaryButton
 import com.example.trustline.presentation.common.PrimaryOutlinedButton
 import com.example.trustline.presentation.common.TrustLineLogoImg
@@ -21,7 +22,10 @@ import com.example.trustline.presentation.common.TrustlineTitle
 import kotlinx.coroutines.delay
 
 @Composable
-fun WelcomeView( modifier: Modifier = Modifier) {
+fun WelcomeView(
+    modifier: Modifier = Modifier,
+    navController: NavHostController? = null
+) {
     Column(
         Modifier
             .padding(dimensionResource(id = R.dimen.padding_medium))
@@ -37,7 +41,9 @@ fun WelcomeView( modifier: Modifier = Modifier) {
         ) {
             PrimaryButton(
                 title = "Report a case",
-                onButtonClicked = {/*TODO add navigation to report case*/ })
+                onButtonClicked = {
+                    navController?.navigate(ScreenConfiguration.UnauthenticatedScreen.ReportCaseInfo.route)
+                })
             PrimaryOutlinedButton("Seek help", onButtonClicked = {/*TODO navigate to seek help*/ })
 
         }
