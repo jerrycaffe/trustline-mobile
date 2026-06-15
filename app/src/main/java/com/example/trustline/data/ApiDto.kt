@@ -2,6 +2,7 @@ package com.example.trustline.data
 
 import com.google.gson.Gson
 import okhttp3.ResponseBody
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class RegisterUserRes(
@@ -42,9 +43,8 @@ data class ErrorResponse(
     val data: Any? = null
 )
 
-fun parseError(responseBody: ResponseBody?): ErrorResponse? {
+fun parseError(responseBody: ResponseBody?, gson: Gson = Gson()): ErrorResponse? {
     return try {
-        val gson = Gson()
         val rawJson: String? = responseBody?.string()
         gson.fromJson(rawJson, ErrorResponse::class.java)
     } catch (e: Exception) {
@@ -113,3 +113,30 @@ data class ResendOtpResponse(
     val otpId: UUID,
     val userId: UUID
 )
+
+data class IncidentType(
+    val id: UUID,
+    val name: String,
+    val description: String,
+    val createdBy: String,
+    val steps: Int
+)
+
+data class GbvResourceApiModel(
+    val id: UUID,
+    val name: String,
+    val incidentType: String,
+    val contents: String,
+    val fileUrl: String?,
+    val createdBy: String,
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?
+)
+
+data class GbvResourceListResponse(
+    val content: List<GbvResourceApiModel>?,
+    val count: Int,
+    val total: Int,
+    val last: Boolean
+)
+

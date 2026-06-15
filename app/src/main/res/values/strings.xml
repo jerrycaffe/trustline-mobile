@@ -2,6 +2,7 @@
     <string name="app_name">trustline</string>
     <string name="signup_title">create an account</string>
     <string name="forgot_password_image">forgot password image</string>
+    <string name="gbv_resource_image">gbv resource image</string>
     <string name="reset_password_image">reset password image</string>
     <string name="otp_verification">OTP Verification</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -24,11 +25,14 @@
     <string name="continue_with_socials">or continue with</string>
     <string name="signup_description">Enter your details to sign up to this app</string>
     <string name="report_a_case">Report a Case</string>
-    <string name="report_case_description">To report a case, you’d need to provide vital and legitimate information. You are also able to upload any media as evidence to support your report. After the report has been received, you would be contacted to proceed with the next steps.</string>
+    <string name="report_case_description">To report a case, you will need to provide accurate and relevant information. You can also upload media files as evidence to support your report. Once your report has been received, you will be contacted with the next steps in the process.</string>
     <string name="continue_text">Continue</string>
     <string name="report_case_icon">Report Icon</string>
     <string name="track_a_case">Track a Case</string>
-    <string name="track_case_description">After reporting a case, you can track the status and progress of the case as it gets closer to resolution. This helps keep you updated on the case.</string>
+    <string name="track_case_description">Once you report a case, you can track its status and progress as it moves toward resolution. This helps keep you informed and updated throughout the process.</string>
     <string name="seek_help">Seek Help</string>
-    <string name="seek_help_description">If you are a victim of GBV and are suffering from trauma. you can make use of some our wellness exercises as a first treatment. Although, it is recommended to see a wellness professional.</string>
+    <string name="seek_help_description">If you are a victim of Gender-Based Violence (GBV) and experiencing trauma, you can use some of our wellness exercises as an initial step toward emotional support and recovery. However, we strongly recommend seeking help from a qualified wellness or mental health professional for proper care and guidance.</string>
+    <string name="login_aware_descrption">You’re not currently logged into an account. Tap the **Continue** button to log in and gain access to all the features of the app.</string>
+    <string name="login_aware">login aware</string>
+    <string name="gbv_resources_description">We have compiled a few resources about GBV, to help you learn more about it and to help you make the right decisions.</string>
 </resources>

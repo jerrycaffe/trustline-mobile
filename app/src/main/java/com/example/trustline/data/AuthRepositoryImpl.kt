@@ -13,6 +13,14 @@ interface AuthRepository {
     suspend fun resendOtp(resendOtpRequest: ResendOtpRequest): ApiResult<ResendOtpResponse>
 
     suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): ApiResult<ResetPasswordResponse>
+
+    suspend fun getIncidentTypes(accessToken: String): ApiResult<List<IncidentType>>
+
+    suspend fun getGbvResources(
+        institutionId: String,
+        offset: Int,
+        limit: Int
+    ): ApiResult<GbvResourceListResponse>
 }
 
 class AuthRepositoryImpl(
@@ -64,6 +72,22 @@ class AuthRepositoryImpl(
             resetPasswordRequest,
             ResetPasswordResponse::class
         )
+    }
+
+    override suspend fun getIncidentTypes(accessToken: String): ApiResult<List<IncidentType>> {
+        return api.makeGetCall(
+            "/api/v1/incident-types",
+            accessToken
+        )
+    }
+
+    override suspend fun getGbvResources(
+        institutionId: String,
+        offset: Int,
+        limit: Int
+    ): ApiResult<GbvResourceListResponse> {
+        val url = "/api/v1/resources?institutionId=$institutionId&offset=$offset&limit=$limit"
+        return api.makePublicGetCall(url)
     }
 }
 

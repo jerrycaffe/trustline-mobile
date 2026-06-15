@@ -74,10 +74,11 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 
                         Toast.makeText(context, "OTP verified", Toast.LENGTH_LONG)
                             .show()
-                        //navigate based on the action
-                        globalViewModel.otpValidationContent?.intendedScreen?.let {
-                            navController.navigate(it)
-                        }
+                        globalViewModel.isUserAuthenticated = true
+                        val destination =
+                            globalViewModel.otpValidationContent?.intendedScreen ?: return@collect
+                        globalViewModel.otpValidationContent = null
+                        navController.navigate(destination)
                     }
 
                     is OtpVerificationScreenViewModel.ValidationEvent.OtpResendSuccess -> {

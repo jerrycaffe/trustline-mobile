@@ -38,17 +38,19 @@ fun InputTextBox(
     isPasswordField: Boolean = false,
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
-
+    singleLine: Boolean = true,
     onValueChanged: (String) -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
     val borderColor = if (isError) MaterialTheme.colorScheme.error else Color.LightGray
-    BasicTextField(modifier = Modifier.onFocusChanged { focusedState ->
-        isFocused = focusedState.isFocused
-    },
+    BasicTextField(
+        modifier = Modifier
+            .onFocusChanged { focusedState ->
+                isFocused = focusedState.isFocused
+            },
         visualTransformation = if (isPasswordField && !showPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        singleLine = true,
+        singleLine = singleLine,
         value = value,
         onValueChange = onValueChanged,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),

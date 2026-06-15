@@ -1,8 +1,10 @@
 package com.example.trustline.data
 
 import com.example.trustline.BuildConfig
+import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDateTime
 
 interface AppContainer {
     val authRepository: AuthRepository
@@ -11,9 +13,13 @@ interface AppContainer {
 class DefaultAppContainer : AppContainer {
     private val baseUrl = BuildConfig.BASE_URL
 
+    private val gson = GsonBuilder()
+        .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
+        .create()
+
     //This is retrofit settings/configuration
     private val retrofit: Retrofit = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .baseUrl(baseUrl)
         .build()
 
@@ -22,7 +28,7 @@ class DefaultAppContainer : AppContainer {
         retrofit.create(ApiService::class.java)
     }
     private val apiServiceImpl: ApiServiceImpl by lazy {
-        ApiServiceImpl(apiService)
+        ApiServiceImpl(apiService, gson)
     }
 
     //    This is what i want to expose to the outside word
