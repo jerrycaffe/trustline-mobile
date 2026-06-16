@@ -1,5 +1,7 @@
 package com.example.trustline.data
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.trustline.BuildConfig
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
@@ -10,14 +12,17 @@ interface AppContainer {
     val authRepository: AuthRepository
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 class DefaultAppContainer : AppContainer {
     private val baseUrl = BuildConfig.BASE_URL
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private val gson = GsonBuilder()
         .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
         .create()
 
     //This is retrofit settings/configuration
+    @RequiresApi(Build.VERSION_CODES.O)
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create(gson))
         .baseUrl(baseUrl)

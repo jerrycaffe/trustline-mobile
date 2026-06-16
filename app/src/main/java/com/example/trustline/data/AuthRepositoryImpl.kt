@@ -1,5 +1,7 @@
 package com.example.trustline.data
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 interface AuthRepository {
     suspend fun registerUser(registerUserRequest: RegisterUserRequest): ApiResult<RegisterUserRes>
@@ -21,6 +23,18 @@ interface AuthRepository {
         offset: Int,
         limit: Int
     ): ApiResult<GbvResourceListResponse>
+
+    suspend fun submitCase(
+        accessToken: String,
+        caseBody: RequestBody,
+        files: List<MultipartBody.Part>
+    ): ApiResult<Unit>
+
+    suspend fun getCases(
+        accessToken: String,
+        offset: Int,
+        limit: Int
+    ): ApiResult<CaseListResponse>
 }
 
 class AuthRepositoryImpl(
@@ -89,7 +103,55 @@ class AuthRepositoryImpl(
         val url = "/api/v1/resources?institutionId=$institutionId&offset=$offset&limit=$limit"
         return api.makePublicGetCall(url)
     }
+
+    override suspend fun submitCase(
+        accessToken: String,
+        caseBody: RequestBody,
+        files: List<MultipartBody.Part>
+    ): ApiResult<Unit> {
+        return api.makeMultipartPostCall(
+            accessToken = accessToken,
+            caseBody = caseBody,
+            files = files
+        )
+    }
+
+    override suspend fun getCases(
+        accessToken: String,
+        offset: Int,
+        limit: Int
+    ): ApiResult<CaseListResponse> {
+        val result = api.makeMyCasesGetCall(accessToken)
+        return when (result) {
+            is ApiResult.Success -> {
+                val payload = result.data
+                ApiResult.Success(
+                    data = CaseListResponse(
+                        content = payload?.content?.map {
+                            CaseApiModel(
+                                id = it.id,
+                                caseNumber = it.caseNumber,
+                                incidentType = it.incidentType,
+                                status = it.status,
+                                location = it.location,
+                                description = it.description,
+                                dateOfIncident = it.dateOfIncident,
+                                createdAt = it.createdAt,
+                                updatedAt = it.updatedAt,
+                                allUnitsInvolved = it.allUnitsInvolved
+                            )
+                        },
+                        count = payload?.count ?: 0,
+                        total = payload?.total ?: 0,
+                        last = payload?.last ?: true
+                    ),
+                    message = result.message,
+                    success = result.success,
+                    code = result.code
+                )
+            }
+
+            is ApiResult.Error -> ApiResult.Error(result.message, result.code)
+        }
+    }
 }
-
-
-

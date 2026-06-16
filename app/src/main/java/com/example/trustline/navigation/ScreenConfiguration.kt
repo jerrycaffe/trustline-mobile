@@ -19,7 +19,10 @@ enum class Routes {
     REPORT,
     GBV_RESOURCES,
     GBV_RESOURCES_DETAIL,
-    AUTH_REPORT_CASE
+    AUTH_REPORT_CASE,
+    TRACK_CASES,
+    TRACK_CASES_DETAIL,
+    TRACK_CASES_DESCRIPTION
 }
 
 sealed class ScreenConfiguration(val route: String) {
@@ -47,5 +50,9 @@ sealed class ScreenConfiguration(val route: String) {
         data object GbvResources : UnauthenticatedScreen(Routes.GBV_RESOURCES.name)
         data object AuthReportCase : UnauthenticatedScreen(Routes.AUTH_REPORT_CASE.name)
         data object GbvResourcesDetail : UnauthenticatedScreen(Routes.GBV_RESOURCES_DETAIL.name)
+        data object TrackCases : UnauthenticatedScreen(Routes.TRACK_CASES.name)
+        data object TrackCasesDetail : UnauthenticatedScreen(Routes.TRACK_CASES_DETAIL.name)
+        data object TrackCasesDescription :
+            UnauthenticatedScreen(Routes.TRACK_CASES_DESCRIPTION.name)
     }
 }

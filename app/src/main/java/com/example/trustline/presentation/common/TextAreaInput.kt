@@ -35,7 +35,7 @@ fun TextAreaInput(
             )
             .padding(16.dp)
     ) {
-        if (text.isEmpty()) {
+        if (value.isEmpty()) {
             Text(
                 text = placeHolder,
                 color = Color.Gray

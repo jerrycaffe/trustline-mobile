@@ -147,7 +147,8 @@ fun HomeScreen(navController: NavHostController, globalViewModel: MainViewModel)
             text = "Quick actions",
             fontSize = 22.sp,
             style = TextStyle(
-                fontFamily = FontFamily(Font(R.font.montserrat_semi_bold))
+                fontFamily = FontFamily(Font(R.font.montserrat_semi_bold)),
+                color = colorResource(R.color.black)
             )
         )
 
@@ -191,10 +192,12 @@ fun HomeScreen(navController: NavHostController, globalViewModel: MainViewModel)
             item {
                 DashboardCard(
                     "Track a Case", Color(0xFF87CBF9), R.drawable.gis_route, handleNavigation = {
-                        if (!globalViewModel.isUserAuthenticated) {
-                            globalViewModel.rememberPendingPostAuthRoute(Routes.TRACK_CASE_INFO.name)
+                        if (globalViewModel.isUserAuthenticated) {
+                            navController.navigate(Routes.CASES.name)
+                        } else {
+                            globalViewModel.rememberPendingPostAuthRoute(Routes.CASES.name)
+                            navController.navigate(Routes.TRACK_CASE_INFO.name)
                         }
-                        navController.navigate(Routes.TRACK_CASE_INFO.name)
                     })
             }
             item {

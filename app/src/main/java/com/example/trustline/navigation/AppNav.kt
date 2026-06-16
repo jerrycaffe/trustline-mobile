@@ -20,7 +20,10 @@ import com.example.trustline.presentation.report.presentation.presentation.Repor
 import com.example.trustline.presentation.report.presentation.presentation.ReportScreen
 import com.example.trustline.presentation.seekHelp.presentation.SeekHelpCaseInfoScreen
 import com.example.trustline.presentation.splash.SplashScreen
+import com.example.trustline.presentation.trackCase.presentation.CasesScreen
 import com.example.trustline.presentation.trackCase.presentation.TrackCaseInfoScreen
+import com.example.trustline.presentation.trackCase.presentation.TrackCasesDescriptionScreen
+import com.example.trustline.presentation.trackCase.presentation.TrackCasesDetailScreen
 
 @Composable
 fun AppNavigation(
@@ -70,9 +73,19 @@ fun AppNavigation(
         }
 
         composable(ScreenConfiguration.UnauthenticatedScreen.TrackCaseInfo.route) {
-            TrackCaseInfoScreen(
-                onBackClicked = { navController.popBackStack() },
-                onContinueClicked = { navController.navigate(Routes.LOGIN_AWARE.name) })
+            if (globalViewModel.isUserAuthenticated) {
+                MainTabWrapper(navController, globalViewModel) {
+                    CasesScreen(navController = navController, globalViewModel = globalViewModel)
+                }
+            } else {
+                TrackCaseInfoScreen(
+                    onBackClicked = { navController.popBackStack() },
+                    onContinueClicked = {
+                        globalViewModel.rememberPendingPostAuthRoute(Routes.CASES.name)
+                        navController.navigate(Routes.LOGIN_AWARE.name)
+                    }
+                )
+            }
         }
         composable(ScreenConfiguration.UnauthenticatedScreen.SeekHelpInfo.route) {
             SeekHelpCaseInfoScreen(
@@ -96,10 +109,19 @@ fun AppNavigation(
 
         // Bottom Navigation Destinations
         composable(ScreenConfiguration.UnauthenticatedScreen.Cases.route) {
-            MainTabWrapper(navController, globalViewModel) {
-                TrackCaseInfoScreen(
-                    onBackClicked = { navController.popBackStack() },
-                    onContinueClicked = { navController.navigate(Routes.LOGIN_AWARE.name) })
+            if (globalViewModel.isUserAuthenticated) {
+                MainTabWrapper(navController, globalViewModel) {
+                    CasesScreen(navController = navController, globalViewModel = globalViewModel)
+                }
+            } else {
+                MainTabWrapper(navController, globalViewModel) {
+                    TrackCaseInfoScreen(
+                        onBackClicked = { navController.popBackStack() },
+                        onContinueClicked = {
+                            globalViewModel.rememberPendingPostAuthRoute(Routes.CASES.name)
+                            navController.navigate(Routes.LOGIN_AWARE.name)
+                        })
+                }
             }
         }
 
@@ -131,5 +153,23 @@ fun AppNavigation(
             }
         }
 
+        composable(ScreenConfiguration.UnauthenticatedScreen.TrackCases.route) {
+            MainTabWrapper(navController, globalViewModel) {
+                CasesScreen(navController = navController, globalViewModel = globalViewModel)
+            }
+
+        }
+
+        composable(ScreenConfiguration.UnauthenticatedScreen.TrackCasesDetail.route) {
+            TrackCasesDetailScreen(
+                globalViewModel.consumeSelectedCaseForTracking(),
+                onBackClicked = { navController.popBackStack() })
+        }
+        composable(ScreenConfiguration.UnauthenticatedScreen.TrackCasesDescription.route) {
+            TrackCasesDescriptionScreen(
+                onBackClicked = { navController.popBackStack() },
+                globalViewModel.consumeSelectedCaseForTracking(),
+            )
+        }
     }
 }

@@ -140,3 +140,64 @@ data class GbvResourceListResponse(
     val last: Boolean
 )
 
+data class SubmitCasePayload(
+    val location: String,
+    val dateOfIncident: String,
+    val incidentTypeId: String,
+    val description: String
+)
+
+data class CaseApiModel(
+    val id: String,
+    val caseNumber: String?,
+    val incidentType: String?,
+    val status: String?,
+    val location: String?,
+    val description: String?,
+    val dateOfIncident: String?,
+    val createdAt: String?,
+    val updatedAt: String?,
+    val allUnitsInvolved: List<String>? = null
+)
+
+data class CaseFileApiModel(
+    val id: String,
+    val url: String
+)
+
+data class MyCaseApiModel(
+    val id: String,
+    val caseNumber: String?,
+    val incidentType: String?,
+    val dateOfIncident: String?,
+    val location: String?,
+    val description: String?,
+    val reportedBy: String?,
+    val status: String?,
+    val closed: Boolean?,
+    val currentUnit: String?,
+    val nextUnit: String?,
+    val allUnitsInvolved: List<String>?,
+    val unitsThatCommented: List<String>?,
+    val unitsYetToComment: List<String>?,
+    val treatedUnits: List<String>?,
+    val tracking: Double?,
+    val files: List<CaseFileApiModel>?,
+    val comments: List<Any>?,
+    val createdAt: String?,
+    val updatedAt: String?
+)
+
+data class MyCaseListResponse(
+    val content: List<MyCaseApiModel>?,
+    val count: Int,
+    val total: Int,
+    val last: Boolean
+)
+
+data class CaseListResponse(
+    val content: List<CaseApiModel>?,
+    val count: Int,
+    val total: Int,
+    val last: Boolean
+)

@@ -1,15 +1,15 @@
 package com.example.trustline.presentation.report.presentation.presentation
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,12 +26,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -45,7 +48,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,10 +56,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.R
 import com.example.trustline.navigation.Routes
+import com.example.trustline.data.SubmitCasePayload
 import com.example.trustline.presentation.common.DatePickerInput
 import com.example.trustline.presentation.common.DropDownSelectInput
 import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.TextAreaInput
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +75,7 @@ fun AuthReportCaseScreen(navController: NavHostController) {
     val viewState = viewModel.state
     val context = LocalContext.current
     var incidentType by remember { mutableStateOf("") }
+    var selectedIncidentTypeId by remember { mutableStateOf("") }
     var occurrenceDate by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -73,10 +83,32 @@ fun AuthReportCaseScreen(navController: NavHostController) {
     var selectedFileType by remember { mutableStateOf<FileType?>(null) }
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     val isSubmitEnabled = incidentType.isNotBlank() &&
-        occurrenceDate.isNotBlank() &&
-        location.isNotBlank() &&
-        description.isNotBlank() &&
-        selectedFileUri != null
+        selectedIncidentTypeId.isNotBlank() &&
+            occurrenceDate.isNotBlank() &&
+            location.isNotBlank() &&
+            description.isNotBlank() &&
+        selectedFileUri != null &&
+        !viewState.isSubmitting
+
+    val successMessage = viewState.submitSuccessMessage
+    if (successMessage != null) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text("Success") },
+            text = { Text(successMessage) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.consumeSubmitSuccess()
+                    navController.navigate(Routes.HOME.name) {
+                        popUpTo(Routes.HOME.name) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }) {
+                    Text("Continue")
+                }
+            }
+        )
+    }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -101,7 +133,11 @@ fun AuthReportCaseScreen(navController: NavHostController) {
         }
 
         if (detectedType == null) {
-            Toast.makeText(context, "Only image, video, or audio files are allowed", Toast.LENGTH_LONG)
+            Toast.makeText(
+                context,
+                "Only image, video, or audio files are allowed",
+                Toast.LENGTH_LONG
+            )
                 .show()
             selectedFileUri = null
             selectedFileType = null
@@ -142,7 +178,11 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                     containerColor = Color(0xFFFBFBFB)
                 )
             )
-        }
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        containerColor = Color(0xFFFBFBFB)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -165,7 +205,14 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                 DropDownSelectInput(
                     selectedOption = incidentType,
                     options = viewState.incidentTypes.map { it.name },
-                    onOptionSelected = { incidentType = it },
+                    onOptionSelected = {
+                        incidentType = it
+                        selectedIncidentTypeId = viewState.incidentTypes
+                            .firstOrNull { type -> type.name == it }
+                            ?.id
+                            ?.toString()
+                            .orEmpty()
+                    },
                     placeholder = "Select incident type"
                 )
 
@@ -181,6 +228,15 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                 if (viewState.incidentTypeError != null) {
                     Text(
                         text = viewState.incidentTypeError,
+                        color = Color(0xFFD32F2F),
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
+                }
+
+                if (viewState.submitError != null) {
+                    Text(
+                        text = viewState.submitError,
                         color = Color(0xFFD32F2F),
                         fontSize = 13.sp,
                         modifier = Modifier.padding(top = 6.dp)
@@ -313,7 +369,47 @@ fun AuthReportCaseScreen(navController: NavHostController) {
             }
 
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.consumeSubmitError()
+
+                    val incidentDate = formatDateForApi(occurrenceDate)
+                    if (incidentDate == null) {
+                        Toast.makeText(context, "Please select a valid incident date", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+
+                    val casePayload = SubmitCasePayload(
+                        location = location.trim(),
+                        dateOfIncident = incidentDate,
+                        incidentTypeId = selectedIncidentTypeId,
+                        description = description.trim()
+                    )
+
+                    val caseBody = Gson().toJson(casePayload)
+                        .toRequestBody("application/json; charset=utf-8".toMediaType())
+
+                    val evidenceUri = selectedFileUri
+                    if (evidenceUri == null) {
+                        Toast.makeText(context, "Please select an evidence file", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+
+                    val filePart = buildEvidencePart(
+                        context = context,
+                        fileUri = evidenceUri,
+                        fileName = selectedFileName
+                    )
+
+                    if (filePart == null) {
+                        Toast.makeText(context, "Unable to read selected file", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+
+                    viewModel.submitCase(
+                        caseBody = caseBody,
+                        files = listOf(filePart)
+                    )
+                },
                 enabled = isSubmitEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -325,15 +421,47 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                     disabledContainerColor = Color(0xFFD2CFFA)
                 )
             ) {
-                Text(
-                    text = "Submit",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                if (viewState.isSubmitting) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(22.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = "Submit",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
         }
     }
+}
+
+private fun formatDateForApi(dateText: String): String? {
+    val regex = Regex("""^(\d{1,2})\s*-\s*(\d{1,2})\s*-\s*(\d{4})$""")
+    val match = regex.find(dateText.trim()) ?: return null
+
+    val day = match.groupValues[1].toIntOrNull() ?: return null
+    val month = match.groupValues[2].toIntOrNull() ?: return null
+    val year = match.groupValues[3].toIntOrNull() ?: return null
+
+    if (month !in 1..12 || day !in 1..31) return null
+    return String.format(Locale.US, "%04d-%02d-%02d", year, month, day)
+}
+
+private fun buildEvidencePart(
+    context: android.content.Context,
+    fileUri: Uri,
+    fileName: String?
+): MultipartBody.Part? {
+    val bytes = context.contentResolver.openInputStream(fileUri)?.use { it.readBytes() } ?: return null
+    val mimeType = context.contentResolver.getType(fileUri) ?: "application/octet-stream"
+    val requestBody = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
+    val resolvedFileName = fileName ?: "evidence_${System.currentTimeMillis()}"
+    return MultipartBody.Part.createFormData("files", resolvedFileName, requestBody)
 }
 
 private const val MAX_FILE_SIZE_BYTES = 2L * 1024L * 1024L

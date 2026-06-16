@@ -16,11 +16,16 @@ import com.example.trustline.data.IncidentType
 import com.example.trustline.data.PreferenceStorage
 import com.example.trustline.utils.toTitleCase
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 data class AuthReportCaseState(
     val incidentTypes: List<IncidentType> = emptyList(),
     val incidentTypeError: String? = null,
-    val isLoadingIncidentTypes: Boolean = false
+    val isLoadingIncidentTypes: Boolean = false,
+    val isSubmitting: Boolean = false,
+    val submitError: String? = null,
+    val submitSuccessMessage: String? = null
 )
 
 class AuthReportCaseViewModel(
@@ -62,6 +67,43 @@ class AuthReportCaseViewModel(
                 }
             }
         }
+    }
+
+    fun submitCase(caseBody: RequestBody, files: List<MultipartBody.Part>) {
+        val token = preferenceStorage.getAccessToken()
+        if (token.isNullOrBlank()) {
+            state = state.copy(submitError = "Authentication token not found")
+            return
+        }
+
+        state = state.copy(isSubmitting = true, submitError = null)
+
+        viewModelScope.launch {
+            when (val result = authRepository.submitCase(token, caseBody, files)) {
+                is ApiResult.Error -> {
+                    state = state.copy(
+                        isSubmitting = false,
+                        submitError = result.message.toTitleCase()
+                    )
+                }
+
+                is ApiResult.Success -> {
+                    state = state.copy(
+                        isSubmitting = false,
+                        submitError = null,
+                        submitSuccessMessage = "Case submitted successfully"
+                    )
+                }
+            }
+        }
+    }
+
+    fun consumeSubmitSuccess() {
+        state = state.copy(submitSuccessMessage = null)
+    }
+
+    fun consumeSubmitError() {
+        state = state.copy(submitError = null)
     }
 
     companion object {
