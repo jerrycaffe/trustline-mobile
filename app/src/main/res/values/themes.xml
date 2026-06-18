@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Theme.Trustline" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Trustline.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/trustline_launcher</item>
+        <item name="windowSplashScreenBackground">#FBFBFB</item>
+        <item name="postSplashScreenTheme">@style/Theme.Trustline</item>
+    </style>
 </resources>

@@ -43,7 +43,7 @@ fun InputTextBox(
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
-    val borderColor = if (isError) MaterialTheme.colorScheme.error else Color.LightGray
+    val borderColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     BasicTextField(
         modifier = Modifier
             .onFocusChanged { focusedState ->

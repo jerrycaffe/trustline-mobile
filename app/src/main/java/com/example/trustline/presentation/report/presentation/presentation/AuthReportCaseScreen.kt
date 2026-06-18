@@ -24,13 +24,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -55,8 +56,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.trustline.R
-import com.example.trustline.navigation.Routes
 import com.example.trustline.data.SubmitCasePayload
+import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.DatePickerInput
 import com.example.trustline.presentation.common.DropDownSelectInput
 import com.example.trustline.presentation.common.InputTextBox
@@ -83,12 +84,12 @@ fun AuthReportCaseScreen(navController: NavHostController) {
     var selectedFileType by remember { mutableStateOf<FileType?>(null) }
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     val isSubmitEnabled = incidentType.isNotBlank() &&
-        selectedIncidentTypeId.isNotBlank() &&
+            selectedIncidentTypeId.isNotBlank() &&
             occurrenceDate.isNotBlank() &&
             location.isNotBlank() &&
             description.isNotBlank() &&
-        selectedFileUri != null &&
-        !viewState.isSubmitting
+            selectedFileUri != null &&
+            !viewState.isSubmitting
 
     val successMessage = viewState.submitSuccessMessage
     if (successMessage != null) {
@@ -175,14 +176,14 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFBFBFB)
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        containerColor = Color(0xFFFBFBFB)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -219,7 +220,7 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                 if (viewState.isLoadingIncidentTypes) {
                     Text(
                         text = "Loading incident types...",
-                        color = Color(0xFF8F8F8F),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(top = 6.dp)
                     )
@@ -228,7 +229,7 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                 if (viewState.incidentTypeError != null) {
                     Text(
                         text = viewState.incidentTypeError,
-                        color = Color(0xFFD32F2F),
+                        color = MaterialTheme.colorScheme.error,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(top = 6.dp)
                     )
@@ -237,7 +238,7 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                 if (viewState.submitError != null) {
                     Text(
                         text = viewState.submitError,
-                        color = Color(0xFFD32F2F),
+                        color = MaterialTheme.colorScheme.error,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(top = 6.dp)
                     )
@@ -336,7 +337,7 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "Tap to replace",
-                                color = Color(0xFF837AEF),
+                                color = MaterialTheme.colorScheme.primary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -358,7 +359,7 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = ".jpg, .mp4, .png, .mp3 (max 2MB)",
-                                color = Color(0xFF8F8F8F),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 14.sp
                             )
                         }
@@ -374,7 +375,11 @@ fun AuthReportCaseScreen(navController: NavHostController) {
 
                     val incidentDate = formatDateForApi(occurrenceDate)
                     if (incidentDate == null) {
-                        Toast.makeText(context, "Please select a valid incident date", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Please select a valid incident date",
+                            Toast.LENGTH_LONG
+                        ).show()
                         return@Button
                     }
 
@@ -390,7 +395,8 @@ fun AuthReportCaseScreen(navController: NavHostController) {
 
                     val evidenceUri = selectedFileUri
                     if (evidenceUri == null) {
-                        Toast.makeText(context, "Please select an evidence file", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Please select an evidence file", Toast.LENGTH_LONG)
+                            .show()
                         return@Button
                     }
 
@@ -401,7 +407,8 @@ fun AuthReportCaseScreen(navController: NavHostController) {
                     )
 
                     if (filePart == null) {
-                        Toast.makeText(context, "Unable to read selected file", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Unable to read selected file", Toast.LENGTH_LONG)
+                            .show()
                         return@Button
                     }
 
@@ -457,7 +464,8 @@ private fun buildEvidencePart(
     fileUri: Uri,
     fileName: String?
 ): MultipartBody.Part? {
-    val bytes = context.contentResolver.openInputStream(fileUri)?.use { it.readBytes() } ?: return null
+    val bytes =
+        context.contentResolver.openInputStream(fileUri)?.use { it.readBytes() } ?: return null
     val mimeType = context.contentResolver.getType(fileUri) ?: "application/octet-stream"
     val requestBody = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
     val resolvedFileName = fileName ?: "evidence_${System.currentTimeMillis()}"
@@ -502,5 +510,3 @@ private fun loadBitmapFromUri(context: android.content.Context, uri: Uri): Bitma
         null
     }
 }
-
-

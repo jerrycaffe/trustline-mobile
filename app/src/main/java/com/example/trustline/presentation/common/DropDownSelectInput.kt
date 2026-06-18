@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +53,7 @@ fun DropDownSelectInput(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.LightGray.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
                 .clickable { expanded = true }
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -60,7 +61,8 @@ fun DropDownSelectInput(
             Text(
                 text = if (selectedOption.isBlank()) placeholder else selectedOption,
                 modifier = Modifier.weight(1f),
-                color = if (selectedOption.isBlank()) Color.Gray else Color.Black
+                color = if (selectedOption.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant
+                else MaterialTheme.colorScheme.onSurface
             )
 
             Icon(

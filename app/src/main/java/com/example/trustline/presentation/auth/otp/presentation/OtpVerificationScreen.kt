@@ -232,23 +232,19 @@ private fun CharView(
             .border(
                 1.5.dp, when {
                     isFocused || text.isNotBlank() -> colorResource(id = R.color.primary)
-                    else -> Color.LightGray
+                    else -> MaterialTheme.colorScheme.outline
                 }, RoundedCornerShape(10.dp)
             )
             .padding(10.dp),
         text = char,
         style = MaterialTheme.typography.titleLarge,
         color = if (isFocused || text.isNotBlank()) {
-            Color.DarkGray
+            MaterialTheme.colorScheme.onSurface
         } else {
-            Color.LightGray
+            MaterialTheme.colorScheme.onSurfaceVariant
         },
         fontSize = 22.sp,
         textAlign = TextAlign.Center
     )
 }
-
-
-
-
 

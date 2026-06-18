@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -99,11 +100,11 @@ fun GbvResourcesScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFBFBFB)
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
-        containerColor = Color(0xFFFBFBFB)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         when {
             viewState.isLoading && !viewState.hasLoadedOnce -> {
@@ -129,7 +130,7 @@ fun GbvResourcesScreen(
                         text = "No resource available as at now, check back later.",
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
-                        color = Color(0xFF4B4B4B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -156,7 +157,7 @@ fun GbvResourcesScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = viewState.error,
-                            color = Color(0xFFD32F2F),
+                            color = MaterialTheme.colorScheme.error,
                             fontSize = 13.sp,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
@@ -169,7 +170,7 @@ fun GbvResourcesScreen(
                                 .align(Alignment.CenterHorizontally)
                                 .clickable { viewModel.retryInitialLoad() },
                             text = "Tap to retry",
-                            color = Color(0xFF837AEF),
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -188,7 +189,7 @@ fun GbvResourcesScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(8.dp),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color.White)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                             ) {
                                 ListItem(
                                     modifier = Modifier
@@ -228,7 +229,4 @@ fun GbvResourcesScreen(
         }
     }
 }
-
-
-
 

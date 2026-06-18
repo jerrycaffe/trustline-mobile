@@ -27,11 +27,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -57,6 +60,7 @@ import kotlinx.coroutines.flow.map
 private val Purple = Color(0xFF837AEF)
 private val LightGrayBg = Color(0xFFF5F5F5)
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CasesScreen(
     navController: NavHostController,
@@ -89,7 +93,7 @@ fun CasesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // ── Header ──────────────────────────────────────────────────────────
         Row(
@@ -115,7 +119,7 @@ fun CasesScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 10.dp),
             shape = RoundedCornerShape(14.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 1.dp
         ) {
             Row(
@@ -129,11 +133,11 @@ fun CasesScreen(
                     onValueChange = viewModel::onSearchChanged,
                     modifier = Modifier.weight(1f),
                     singleLine = true,
-                    textStyle = TextStyle(fontSize = 15.sp, color = Color.Black),
+                    textStyle = TextStyle(fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface),
                     cursorBrush = SolidColor(Purple),
                     decorationBox = { inner ->
                         if (state.searchQuery.isEmpty()) {
-                            Text("Search", color = Color(0xFF9E9E9E), fontSize = 15.sp)
+                            Text("Search", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 15.sp)
                         }
                         inner()
                     }
@@ -141,7 +145,7 @@ fun CasesScreen(
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
-                    tint = Color(0xFF9E9E9E),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -156,80 +160,86 @@ fun CasesScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // ── Content ──────────────────────────────────────────────────────────
-        when {
-            state.isLoading && !state.hasLoadedOnce -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Purple)
+        PullToRefreshBox(
+            isRefreshing = state.isLoading && state.hasLoadedOnce,
+            onRefresh = { viewModel.refresh() },
+            modifier = Modifier.fillMaxSize()
+        ) {
+            when {
+                state.isLoading && !state.hasLoadedOnce -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Purple)
+                    }
                 }
-            }
 
-            state.error != null && state.allCases.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.error,
-                        color = Color(0xFFD32F2F),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-
-            state.hasLoadedOnce && state.filteredCases.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (state.allCases.isEmpty())
-                            "You have not reported any cases yet."
-                        else
-                            "No cases match your search or filter.",
-                        color = Color(0xFF4B4B4B),
-                        fontSize = 15.sp
-                    )
-                }
-            }
-
-            else -> {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(state.filteredCases, key = { it.id }) { caseItem ->
-                        CaseCard(
-                            caseItem = caseItem,
-                            onDetailsCLicked = {
-                                globalViewModel.rememberSelectedCaseForTracking(caseItem)
-                                navController.navigate(Routes.TRACK_CASES_DESCRIPTION.name)
-                            },
-                            onTrackClicked = {
-                                globalViewModel.rememberSelectedCaseForTracking(caseItem)
-                                navController.navigate(Routes.TRACK_CASES_DETAIL.name)
-                            }
+                state.error != null && state.allCases.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.error,
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
+                }
 
-                    if (state.isLoadingMore) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 12.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(28.dp),
-                                    color = Purple
-                                )
+                state.hasLoadedOnce && state.filteredCases.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (state.allCases.isEmpty())
+                                "You have not reported any cases yet."
+                            else
+                                "No cases match your search or filter.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 15.sp
+                        )
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(state.filteredCases, key = { it.id }) { caseItem ->
+                            CaseCard(
+                                caseItem = caseItem,
+                                onDetailsCLicked = {
+                                    globalViewModel.rememberSelectedCaseForTracking(caseItem)
+                                    navController.navigate(Routes.TRACK_CASES_DESCRIPTION.name)
+                                },
+                                onTrackClicked = {
+                                    globalViewModel.rememberSelectedCaseForTracking(caseItem)
+                                    navController.navigate(Routes.TRACK_CASES_DETAIL.name)
+                                }
+                            )
+                        }
+
+                        if (state.isLoadingMore) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 12.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(28.dp),
+                                        color = Purple
+                                    )
+                                }
                             }
                         }
                     }
@@ -249,7 +259,7 @@ private fun CaseFilterTabs(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(10.dp),
-        color = Color(0xFFEEEEEE),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         shadowElevation = 0.dp
     ) {
         Row(
@@ -263,7 +273,7 @@ private fun CaseFilterTabs(
                 Surface(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(11.dp),
-                    color = if (isSelected) Color.White else Color.Transparent,
+                    color = if (isSelected) MaterialTheme.colorScheme.surface else Color.Transparent,
                     shadowElevation = if (isSelected) 2.dp else 0.dp,
                     onClick = { onSelect(filter) }
                 ) {
@@ -273,7 +283,8 @@ private fun CaseFilterTabs(
                             modifier = Modifier.padding(vertical = 10.dp),
                             fontSize = 14.sp,
                             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                            color = if (isSelected) Color.Black else Color(0xFF666666)
+                            color = if (isSelected) MaterialTheme.colorScheme.onSurface
+                            else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -291,7 +302,7 @@ private fun CaseCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(13.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -304,13 +315,13 @@ private fun CaseCard(
                 Box(
                     modifier = Modifier
                         .size(42.dp)
-                        .background(Color(0xFFF0F0F0), CircleShape),
+                        .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_case_document),
                         contentDescription = null,
-                        tint = Color(0xFF555555),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -324,13 +335,13 @@ private fun CaseCard(
                         else "Case #${caseItem.id.takeLast(6).uppercase()}",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF111111)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = caseItem.incidentType ?: "—",
                         fontSize = 13.sp,
-                        color = Color(0xFF777777)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -368,10 +379,10 @@ private fun CaseCard(
                         .weight(1f)
                         .height(33.dp),
                     shape = RoundedCornerShape(8.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFCCCCCC))
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Text(
-                        "Details", color = Color(0xFF111111),
+                        "Details", color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

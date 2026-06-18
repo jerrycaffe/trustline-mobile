@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -80,11 +81,11 @@ fun TrackCasesDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFBFBFB)
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
-        containerColor = Color(0xFFFBFBFB)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         Column(
@@ -92,19 +93,19 @@ fun TrackCasesDetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-                .background(Color(0xFFF7F7F7))
+                .background(MaterialTheme.colorScheme.background)
         ) {
             Text(
                 text = "Case No. ${caseItem?.caseNumber}",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF111111)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = "${caseItem?.incidentType}",
                 fontSize = 17.sp,
-                color = Color(0xFF757575)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -140,7 +141,7 @@ fun TrackCasesDetailScreen(
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 contentDescription = null,
-                                tint = Color.White
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -207,14 +208,14 @@ private fun ProgressTimelineRow(
             Text(
                 text = title,
                 fontSize = 14.sp,
-                color = if (isCompleted) ActivePurple else Color(0xFF111111),
+                color = if (isCompleted) ActivePurple else MaterialTheme.colorScheme.onSurface,
                 fontWeight = if (isCompleted) FontWeight.Medium else FontWeight.Normal
             )
             if (!timestamp.isNullOrBlank()) {
                 Text(
                     text = timestamp,
                     fontSize = 12.sp,
-                    color = Color(0xFF7D7D7D),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }

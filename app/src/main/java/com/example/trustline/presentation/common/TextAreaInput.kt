@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +31,7 @@ fun TextAreaInput(
             .fillMaxWidth()
             .height(140.dp)
             .background(
-                color = Color.LightGray.copy(alpha = 0.2f),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(16.dp)
@@ -38,7 +39,7 @@ fun TextAreaInput(
         if (value.isEmpty()) {
             Text(
                 text = placeHolder,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 

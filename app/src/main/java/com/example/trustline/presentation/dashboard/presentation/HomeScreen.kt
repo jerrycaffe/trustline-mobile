@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,7 +64,7 @@ fun HomeScreen(navController: NavHostController, globalViewModel: MainViewModel)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFBFBFB))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // 2. Header Section
         Row(
@@ -87,14 +88,16 @@ fun HomeScreen(navController: NavHostController, globalViewModel: MainViewModel)
             Row {
                 IconButton(onClick = { }) {
                     Icon(
-                        Icons.Outlined.Search, contentDescription = "Search", tint = Color.Black
+                        Icons.Outlined.Search,
+                        contentDescription = "Search",
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 IconButton(onClick = { }) {
                     Icon(
                         Icons.Outlined.Notifications,
                         contentDescription = "Notifications",
-                        tint = Color.Black
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -148,7 +151,7 @@ fun HomeScreen(navController: NavHostController, globalViewModel: MainViewModel)
             fontSize = 22.sp,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.montserrat_semi_bold)),
-                color = colorResource(R.color.black)
+                color = MaterialTheme.colorScheme.onBackground
             )
         )
 
@@ -234,7 +237,10 @@ fun DashboardCard(title: String, color: Color, icon: Int, handleNavigation: () -
                 tint = Color.Unspecified
             )
             Text(
-                text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -280,7 +286,8 @@ fun CustomBottomNavigation(navController: NavHostController, globalViewModel: Ma
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(10.dp), color = Color.White
+            .shadow(10.dp),
+        color = MaterialTheme.colorScheme.surface
     ) {
         Column {
             // Animated indicator
@@ -340,10 +347,12 @@ fun NavigationMenu(title: String, icon: Int, active: Boolean, onClick: () -> Uni
             painter = painterResource(icon),
             modifier = Modifier.size(23.dp),
             contentDescription = null,
-            tint = if (active) Color(0xFF837AEF) else Color.Black
+            tint = if (active) Color(0xFF837AEF) else MaterialTheme.colorScheme.onSurface
         )
         Text(
-            title, color = if (active) Color(0xFF837AEF) else Color.Black, fontSize = 12.sp
+            title,
+            color = if (active) Color(0xFF837AEF) else MaterialTheme.colorScheme.onSurface,
+            fontSize = 12.sp
         )
     }
 }

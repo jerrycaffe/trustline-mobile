@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -61,11 +62,11 @@ fun TrackCasesDescriptionScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFBFBFB)
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
-        containerColor = Color(0xFFFBFBFB)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         LazyColumn(
@@ -73,7 +74,7 @@ fun TrackCasesDescriptionScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-                .background(Color(0xFFF7F7F7)),
+                .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
@@ -81,7 +82,7 @@ fun TrackCasesDescriptionScreen(
                     text = "Incident Type",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF111111)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -89,7 +90,7 @@ fun TrackCasesDescriptionScreen(
                 Text(
                     text = "${caseApiModel?.incidentType}",
                     fontSize = 17.sp,
-                    color = Color(0xFF757575)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -102,7 +103,7 @@ fun TrackCasesDescriptionScreen(
                     text = "Date of Occurrence",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF111111)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -110,7 +111,7 @@ fun TrackCasesDescriptionScreen(
                 Text(
                     text = "${caseApiModel?.dateOfIncident}",
                     fontSize = 17.sp,
-                    color = Color(0xFF757575)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -123,7 +124,7 @@ fun TrackCasesDescriptionScreen(
                     text = "Location",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF111111)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -131,7 +132,7 @@ fun TrackCasesDescriptionScreen(
                 Text(
                     text = "${caseApiModel?.location}",
                     fontSize = 17.sp,
-                    color = Color(0xFF757575)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -144,7 +145,7 @@ fun TrackCasesDescriptionScreen(
                     text = "Description",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF111111)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -152,7 +153,7 @@ fun TrackCasesDescriptionScreen(
                 Text(
                     text = "${caseApiModel?.description}",
                     fontSize = 17.sp,
-                    color = Color(0xFF757575)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -165,7 +166,7 @@ fun TrackCasesDescriptionScreen(
                     text = "Media",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF111111)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -182,7 +183,7 @@ fun TrackCasesDescriptionScreen(
                     text = "Status",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF111111)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -190,7 +191,7 @@ fun TrackCasesDescriptionScreen(
                 Text(
                     text = "${caseApiModel?.status}",
                     fontSize = 17.sp,
-                    color = Color(0xFF757575)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -211,13 +212,13 @@ private fun MediaSection() {
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(Color(0xFFE8E8E8), RoundedCornerShape(8.dp)),
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = null,
-                    tint = Color(0xFFC0C0C0),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(40.dp)
                 )
             }

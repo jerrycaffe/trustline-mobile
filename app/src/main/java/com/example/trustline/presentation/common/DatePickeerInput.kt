@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import java.util.Calendar
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun DatePickerInput(
@@ -47,7 +48,7 @@ fun DatePickerInput(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.LightGray.copy(alpha = 0.2f))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .clickable { datePickerDialog.show() }
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -55,7 +56,8 @@ fun DatePickerInput(
         Text(
             text = if (selectedDate.isBlank()) placeholder else selectedDate,
             modifier = Modifier.weight(1f),
-            color = if (selectedDate.isBlank()) Color.Gray else Color.Black
+            color = if (selectedDate.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant
+            else MaterialTheme.colorScheme.onSurface
         )
 
         Icon(
