@@ -71,16 +71,22 @@ fun LoginScreen(
                         Toast.makeText(context, "Login successful", Toast.LENGTH_LONG).show()
 
                         val response = event.loginResponse
+                        val destination =
+                            globalViewModel.consumePendingPostAuthRoute() ?: Routes.HOME.name
+
                         if (response.userDetails.status == "OTP_VALIDATION") {
                             globalViewModel.otpValidationContent = OtpValidationContent(
                                 userId = response.userId,
                                 email = response.userDetails.email,
                                 otpId = response.otpId,
-                                intendedScreen = Routes.LOGIN.name // Or wherever next
+                                intendedScreen = destination
                             )
                             navCOntroller.navigate(Routes.OTP_VALIDATION.name)
                         } else {
-                            // Navigate to dashboard
+                            globalViewModel.isUserAuthenticated = true
+                            navCOntroller.navigate(destination) {
+                                popUpTo(Routes.LOGIN.name) { inclusive = true }
+                            }
                         }
                     }
                 }

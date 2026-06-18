@@ -2,6 +2,7 @@ package com.example.trustline.data
 
 import com.google.gson.Gson
 import okhttp3.ResponseBody
+import java.time.LocalDateTime
 import java.util.UUID
 
 data class RegisterUserRes(
@@ -42,9 +43,8 @@ data class ErrorResponse(
     val data: Any? = null
 )
 
-fun parseError(responseBody: ResponseBody?): ErrorResponse? {
+fun parseError(responseBody: ResponseBody?, gson: Gson = Gson()): ErrorResponse? {
     return try {
-        val gson = Gson()
         val rawJson: String? = responseBody?.string()
         gson.fromJson(rawJson, ErrorResponse::class.java)
     } catch (e: Exception) {
@@ -91,4 +91,113 @@ data class ForgotPasswordRequest(
 data class ForgotPasswordResponse(
     val otpId: UUID,
     val userId: UUID
+)
+
+data class ResetPasswordRequest(
+    val newPassword: String,
+    val userId: UUID,
+    val institutionId: UUID,
+    val otpId: UUID
+)
+
+data class ResetPasswordResponse(
+    val message: String
+)
+
+data class ResendOtpRequest(
+    val email: String,
+    val institutionId: UUID
+)
+
+data class ResendOtpResponse(
+    val otpId: UUID,
+    val userId: UUID
+)
+
+data class IncidentType(
+    val id: UUID,
+    val name: String,
+    val description: String,
+    val createdBy: String,
+    val steps: Int
+)
+
+data class GbvResourceApiModel(
+    val id: UUID,
+    val name: String,
+    val incidentType: String,
+    val contents: String,
+    val fileUrl: String?,
+    val createdBy: String,
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?
+)
+
+data class GbvResourceListResponse(
+    val content: List<GbvResourceApiModel>?,
+    val count: Int,
+    val total: Int,
+    val last: Boolean
+)
+
+data class SubmitCasePayload(
+    val location: String,
+    val dateOfIncident: String,
+    val incidentTypeId: String,
+    val description: String
+)
+
+data class CaseApiModel(
+    val id: String,
+    val caseNumber: String?,
+    val incidentType: String?,
+    val status: String?,
+    val location: String?,
+    val description: String?,
+    val dateOfIncident: String?,
+    val createdAt: String?,
+    val updatedAt: String?,
+    val allUnitsInvolved: List<String>? = null
+)
+
+data class CaseFileApiModel(
+    val id: String,
+    val url: String
+)
+
+data class MyCaseApiModel(
+    val id: String,
+    val caseNumber: String?,
+    val incidentType: String?,
+    val dateOfIncident: String?,
+    val location: String?,
+    val description: String?,
+    val reportedBy: String?,
+    val status: String?,
+    val closed: Boolean?,
+    val currentUnit: String?,
+    val nextUnit: String?,
+    val allUnitsInvolved: List<String>?,
+    val unitsThatCommented: List<String>?,
+    val unitsYetToComment: List<String>?,
+    val treatedUnits: List<String>?,
+    val tracking: Double?,
+    val files: List<CaseFileApiModel>?,
+    val comments: List<Any>?,
+    val createdAt: String?,
+    val updatedAt: String?
+)
+
+data class MyCaseListResponse(
+    val content: List<MyCaseApiModel>?,
+    val count: Int,
+    val total: Int,
+    val last: Boolean
+)
+
+data class CaseListResponse(
+    val content: List<CaseApiModel>?,
+    val count: Int,
+    val total: Int,
+    val last: Boolean
 )

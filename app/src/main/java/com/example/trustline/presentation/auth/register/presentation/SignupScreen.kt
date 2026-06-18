@@ -66,12 +66,14 @@ fun SignupScreen(navController: NavHostController, globalViewModel: MainViewMode
                 when (event) {
                     is ValidationEvent.Success -> {
                         Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                        val destination =
+                            globalViewModel.consumePendingPostAuthRoute() ?: Routes.HOME.name
                         globalViewModel.otpValidationContent =
                             OtpValidationContent(
                                 event.registerUserRes.userId,
                                 event.registerUserRes.email,
                                 event.registerUserRes.otpId,
-                                Routes.LOGIN.name
+                                destination
                             )
                         navController.navigate(Routes.OTP_VALIDATION.name)
                     }

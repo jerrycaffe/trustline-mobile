@@ -74,10 +74,20 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
 
                         Toast.makeText(context, "OTP verified", Toast.LENGTH_LONG)
                             .show()
-                        //navigate based on the action
-                        globalViewModel.otpValidationContent?.intendedScreen?.let {
-                            navController.navigate(it)
-                        }
+                        globalViewModel.isUserAuthenticated = true
+                        val destination =
+                            globalViewModel.otpValidationContent?.intendedScreen ?: return@collect
+                        globalViewModel.otpValidationContent = null
+                        navController.navigate(destination)
+                    }
+
+                    is OtpVerificationScreenViewModel.ValidationEvent.OtpResendSuccess -> {
+                        Toast.makeText(context, "OTP Resent", Toast.LENGTH_LONG).show()
+                        globalViewModel.otpValidationContent =
+                            globalViewModel.otpValidationContent?.copy(
+                                otpId = event.response.otpId,
+                                userId = event.response.userId
+                            )
                     }
                 }
             }
@@ -134,7 +144,11 @@ fun OtpVerificationScreen(navController: NavHostController, globalViewModel: Mai
                 Text(
                     text = "Resend",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.clickable { viewModel.onEvent(OtpFormEvent.ResendOtp) })
+                    modifier = Modifier.clickable {
+                        globalViewModel.otpValidationContent?.email?.let {
+                            viewModel.onEvent(OtpFormEvent.ResendOtp(it))
+                        }
+                    })
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
@@ -218,23 +232,19 @@ private fun CharView(
             .border(
                 1.5.dp, when {
                     isFocused || text.isNotBlank() -> colorResource(id = R.color.primary)
-                    else -> Color.LightGray
+                    else -> MaterialTheme.colorScheme.outline
                 }, RoundedCornerShape(10.dp)
             )
             .padding(10.dp),
         text = char,
         style = MaterialTheme.typography.titleLarge,
         color = if (isFocused || text.isNotBlank()) {
-            Color.DarkGray
+            MaterialTheme.colorScheme.onSurface
         } else {
-            Color.LightGray
+            MaterialTheme.colorScheme.onSurfaceVariant
         },
         fontSize = 22.sp,
         textAlign = TextAlign.Center
     )
 }
-
-
-
-
 

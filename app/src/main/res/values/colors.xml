@@ -9,6 +9,7 @@
     <color name="white">#FBFBFB</color>
     <color name="primary">#837AEF</color>
     <color name="secondary">#F6602F</color>
+    <color name="light_secondary">#FFB78E</color>
     <color name="tertiary">#48C9B0</color>
     <color name="primary_accent">#A7A0F2</color>
     #5c5891

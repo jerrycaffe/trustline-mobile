@@ -11,10 +11,13 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.trustline.BuildConfig
 import com.example.trustline.TrustlineApplication
 import com.example.trustline.data.ApiResult
 import com.example.trustline.data.AuthRepository
 import com.example.trustline.data.OtpValidationRequest
+import com.example.trustline.data.ResendOtpRequest
+import com.example.trustline.data.ResendOtpResponse
 import com.example.trustline.utils.TimeFormatExt.timeFormat
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -83,18 +86,36 @@ class OtpVerificationScreenViewModel(
         timeLeft.value = initialTotalTime
     }
 
-    private fun handleResendOtp() {
-//        TODO: resend token, should restart counter
-//        Should call resend otp endpoint passing previous token id
-        resetCountDownTimer()
-        startCountDownTimer()
+    private fun handleResendOtp(email: String) {
+        viewModelScope.launch {
+            state = state.copy(isLoading = true, apiError = null)
+            val request = ResendOtpRequest(
+                email = email,
+                institutionId = UUID.fromString(BuildConfig.INSTITUTION_ID)
+            )
+            val result = authRepository.resendOtp(request)
+            when (result) {
+                is ApiResult.Error -> {
+                    state = state.copy(apiError = result.message, isLoading = false)
+                }
+
+                is ApiResult.Success -> {
+                    state = state.copy(isLoading = false)
+                    resetCountDownTimer()
+                    startCountDownTimer()
+                    result.data?.let {
+                        validationEventChannel.send(ValidationEvent.OtpResendSuccess(it))
+                    }
+                }
+            }
+        }
     }
 
 
     fun onEvent(event: OtpFormEvent) {
         when (event) {
             is OtpFormEvent.OtpChanged -> handleOtpChange(event.otpValue)
-            is OtpFormEvent.ResendOtp -> handleResendOtp()
+            is OtpFormEvent.ResendOtp -> handleResendOtp(event.email)
             is OtpFormEvent.Submit -> submitData(state.otpValue, event.userId)
         }
     }
@@ -129,6 +150,7 @@ class OtpVerificationScreenViewModel(
 
     sealed class ValidationEvent {
         data class Success(val isSuccess: Boolean) : ValidationEvent()
+        data class OtpResendSuccess(val response: ResendOtpResponse) : ValidationEvent()
     }
 }
 

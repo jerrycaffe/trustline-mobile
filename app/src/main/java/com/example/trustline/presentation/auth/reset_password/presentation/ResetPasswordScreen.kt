@@ -33,7 +33,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.trustline.MainViewModel
 import com.example.trustline.R
+import com.example.trustline.navigation.Routes
 import com.example.trustline.presentation.common.ErrorMessageComponent
 import com.example.trustline.presentation.common.InputTextBox
 import com.example.trustline.presentation.common.PrimaryButton
@@ -42,21 +44,23 @@ import com.example.trustline.presentation.common.PrimaryButton
 @Composable
 fun ResetPasswordScreen(
     navController: NavHostController,
+    globalViewModel: MainViewModel,
     innerPadding: Dp = 16.dp,
     modifier: Modifier = Modifier
 ) {
-    val viewModel = viewModel<ResetPasswordViewModel>()
+    val viewModel: ResetPasswordViewModel = viewModel(factory = ResetPasswordViewModel.Factory)
     val state = viewModel.resetPasswordState.collectAsState()
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .pointerInput(Unit) {
-            detectTapGestures { focusManager.clearFocus() }
-        }
-        .padding(dimensionResource(id = R.dimen.padding_medium))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures { focusManager.clearFocus() }
+            }
+            .padding(dimensionResource(id = R.dimen.padding_medium))
 
     ) {
 
@@ -67,6 +71,9 @@ fun ResetPasswordScreen(
                     is ResetPasswordViewModel.ValidationEvent.Success -> {
                         Toast.makeText(context, "Reset password successful", Toast.LENGTH_LONG)
                             .show()
+                        navController.navigate(Routes.LOGIN.name) {
+                            popUpTo(Routes.LOGIN.name) { inclusive = true }
+                        }
                     }
                 }
             }
@@ -102,7 +109,8 @@ fun ResetPasswordScreen(
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_thirty_two)))
 
-            InputTextBox(value = state.value.password,
+            InputTextBox(
+                value = state.value.password,
                 isError = state.value.passwordError != null,
                 placeHolder = stringResource(id = R.string.password),
                 keyboardType = KeyboardType.Password,
@@ -119,7 +127,8 @@ fun ResetPasswordScreen(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_sixteen)))
 
-            InputTextBox(value = state.value.confirmPassword,
+            InputTextBox(
+                value = state.value.confirmPassword,
                 isError = state.value.confirmPasswordError != null,
                 placeHolder = stringResource(id = R.string.confirm_password),
                 keyboardType = KeyboardType.Password,
@@ -140,11 +149,30 @@ fun ResetPasswordScreen(
                     ErrorMessageComponent(state.value.confirmPasswordError!!)
                 }
             }
+            
+            if (state.value.apiError != null) {
+                Row(modifier = Modifier.align(Alignment.Start)) {
+                    ErrorMessageComponent(state.value.apiError!!)
+                }
+            }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.height_sixteen)))
-            PrimaryButton(title = stringResource(id = R.string.reset_password),
+            PrimaryButton(
+                title = stringResource(id = R.string.reset_password),
+                loading = state.value.isLoading,
                 enabled = viewModel.isPasswordMatch(),
                 onButtonClicked = {
-                    viewModel.onEvent((ResetPasswordFormEvent.Submit))
+                    val content = globalViewModel.otpValidationContent
+                    val userId = content?.userId
+                    val otpId = content?.otpId
+                    if (userId != null && otpId != null) {
+                        viewModel.onEvent(
+                            ResetPasswordFormEvent.Submit(
+                                userId = userId,
+                                otpId = otpId
+                            )
+                        )
+                    }
                 })
 
 
